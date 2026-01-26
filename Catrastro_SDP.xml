@@ -1,0 +1,1071 @@
+<?xml version="1.0" standalone="yes"?>
+<Catrastro>
+  <xs:schema id="Catrastro" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:element name="Catrastro" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+      <xs:complexType>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="FEAL">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Id" type="xs:int" minOccurs="0" />
+                <xs:element name="Productor" type="xs:string" minOccurs="0" />
+                <xs:element name="Codigo_SAG" type="xs:string" minOccurs="0" />
+                <xs:element name="Variedad" type="xs:string" minOccurs="0" />
+                <xs:element name="Lote" type="xs:string" minOccurs="0" />
+                <xs:element name="SDP" type="xs:string" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
+  <FEAL>
+    <Id>101</Id>
+    <Productor>90364 HIJUELA ABELLO</Productor>
+    <Codigo_SAG>90364</Codigo_SAG>
+    <Variedad>ARRA 15</Variedad>
+    <Lote>0404</Lote>
+    <SDP>60195</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>101</Id>
+    <Productor>90364 HIJUELA ABELLO</Productor>
+    <Codigo_SAG>90364</Codigo_SAG>
+    <Variedad>ARRA 15</Variedad>
+    <Lote>M0606</Lote>
+    <SDP>60195</SDP>
+  </FEAL>
+ <FEAL>
+    <Id>101</Id>
+    <Productor>90364 HIJUELA ABELLO</Productor>
+    <Codigo_SAG>90364</Codigo_SAG>
+    <Variedad>TIMPSON</Variedad>
+    <Lote>M0607</Lote>
+    <SDP>60195</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>101</Id>
+    <Productor>90364 HIJUELA ABELLO</Productor>
+    <Codigo_SAG>90364</Codigo_SAG>
+    <Variedad>SWEET GLOBE</Variedad>
+    <Lote>M0505</Lote>
+    <SDP>60195</SDP>
+  </FEAL>
+ <FEAL>
+    <Id>101</Id>
+    <Productor>90364 HIJUELA ABELLO</Productor>
+    <Codigo_SAG>90364</Codigo_SAG>
+    <Variedad>TIMCO</Variedad>
+    <Lote>0303</Lote>
+    <SDP>60197</SDP>
+  </FEAL>
+ <FEAL>
+    <Id>101</Id>
+    <Productor>90364 HIJUELA ABELLO</Productor>
+    <Codigo_SAG>90364</Codigo_SAG>
+    <Variedad>TIMCO</Variedad>
+    <Lote>M0811</Lote>
+    <SDP>60196</SDP>
+  </FEAL>
+ <FEAL>
+    <Id>101</Id>
+    <Productor>90364 HIJUELA ABELLO</Productor>
+    <Codigo_SAG>90364</Codigo_SAG>
+    <Variedad>GREAT GREEN</Variedad>
+    <Lote>M0101</Lote>
+    <SDP>60198</SDP>
+  </FEAL>
+ <FEAL>
+    <Id>101</Id>
+    <Productor>90364 HIJUELA ABELLO</Productor>
+    <Codigo_SAG>90364</Codigo_SAG>
+    <Variedad>SWEET GLOBE</Variedad>
+    <Lote>0202</Lote>
+    <SDP>60199</SDP>
+  </FEAL>
+ <FEAL>
+    <Id>102</Id>
+    <Productor>90367 VIÑA DEL CERRO</Productor>
+    <Codigo_SAG>90367</Codigo_SAG>
+    <Variedad>ARRA 15</Variedad>
+    <Lote>0202</Lote>
+    <SDP>60210</SDP>
+  </FEAL>
+ <FEAL>
+    <Id>102</Id>
+    <Productor>90367 VIÑA DEL CERRO</Productor>
+    <Codigo_SAG>90367</Codigo_SAG>
+    <Variedad>ARRA 15</Variedad>
+    <Lote>0406</Lote>
+    <SDP>60211</SDP>
+  </FEAL>
+ <FEAL>
+    <Id>102</Id>
+    <Productor>90367 VIÑA DEL CERRO</Productor>
+    <Codigo_SAG>90367</Codigo_SAG>
+    <Variedad>ARRA 15</Variedad>
+    <Lote>0810</Lote>
+    <SDP>60212</SDP>
+  </FEAL>
+ <FEAL>
+    <Id>103</Id>
+    <Productor>87726 HORNITOS</Productor>
+    <Codigo_SAG>87726</Codigo_SAG>
+    <Variedad>ARRA 15</Variedad>
+    <Lote>0202</Lote>
+    <SDP>60182</SDP>
+  </FEAL>
+ <FEAL>
+    <Id>103</Id>
+    <Productor>87726 HORNITOS</Productor>
+    <Codigo_SAG>87726</Codigo_SAG>
+    <Variedad>ARRA 15</Variedad>
+    <Lote>0506</Lote>
+    <SDP>60183</SDP>
+  </FEAL>
+ <FEAL>
+    <Id>103</Id>
+    <Productor>87726 HORNITOS</Productor>
+    <Codigo_SAG>87726</Codigo_SAG>
+    <Variedad>RED GLOBE</Variedad>
+    <Lote>0101</Lote>
+    <SDP>60184</SDP>
+  </FEAL>
+ <FEAL>
+    <Id>103</Id>
+    <Productor>87726 HORNITOS</Productor>
+    <Codigo_SAG>87726</Codigo_SAG>
+    <Variedad>SUGRAONE</Variedad>
+    <Lote>0304</Lote>
+    <SDP>60185</SDP>
+  </FEAL>
+ <FEAL>
+    <Id>104</Id>
+    <Productor>87725 PARCELA 15</Productor>
+    <Codigo_SAG>87725</Codigo_SAG>
+    <Variedad>SWEET GLOBE</Variedad>
+    <Lote>0105</Lote>
+    <SDP>60123</SDP>
+  </FEAL>
+ <FEAL>
+    <Id>104</Id>
+    <Productor>87725 PARCELA 15</Productor>
+    <Codigo_SAG>87725</Codigo_SAG>
+    <Variedad>SWEET GLOBE</Variedad>
+    <Lote>0612</Lote>
+    <SDP>60135</SDP>
+  </FEAL>
+ <FEAL>
+    <Id>104</Id>
+    <Productor>87725 PARCELA 15</Productor>
+    <Codigo_SAG>87725</Codigo_SAG>
+    <Variedad>TIMPSON</Variedad>
+    <Lote>0105</Lote>
+    <SDP>60136</SDP>
+  </FEAL>
+ <FEAL>
+    <Id>105</Id>
+    <Productor>87723 SANTA LAURA</Productor>
+    <Codigo_SAG>87723</Codigo_SAG>
+    <Variedad>KRISSY</Variedad>
+    <Lote>0105</Lote>
+    <SDP>60138</SDP>
+  </FEAL>
+ <FEAL>
+    <Id>105</Id>
+    <Productor>87723 SANTA LAURA</Productor>
+    <Codigo_SAG>87723</Codigo_SAG>
+    <Variedad>IVORY</Variedad>
+    <Lote>0102</Lote>
+    <SDP>60139</SDP>
+  </FEAL>
+ <FEAL>
+    <Id>105</Id>
+    <Productor>87723 SANTA LAURA</Productor>
+    <Codigo_SAG>87723</Codigo_SAG>
+    <Variedad>ARRA 29</Variedad>
+    <Lote>0304</Lote>
+    <SDP>60140</SDP>
+  </FEAL>
+ <FEAL>
+    <Id>105</Id>
+    <Productor>87723 SANTA LAURA</Productor>
+    <Codigo_SAG>87723</Codigo_SAG>
+    <Variedad>ARRA 29</Variedad>
+    <Lote>0510</Lote>
+    <SDP>60141</SDP>
+  </FEAL>
+ <FEAL>
+    <Id>105</Id>
+    <Productor>87723 SANTA LAURA</Productor>
+    <Codigo_SAG>87723</Codigo_SAG>
+    <Variedad>ALLISON</Variedad>
+    <Lote>0304</Lote>
+    <SDP>60142</SDP>
+  </FEAL>
+ <FEAL>
+    <Id>105</Id>
+    <Productor>87723 SANTA LAURA</Productor>
+    <Codigo_SAG>87723</Codigo_SAG>
+    <Variedad>PRIME SEEDLESS</Variedad>
+    <Lote>M0808</Lote>
+    <SDP>60143</SDP>
+  </FEAL>
+ <FEAL>
+    <Id>105</Id>
+    <Productor>87723 SANTA LAURA</Productor>
+    <Codigo_SAG>87723</Codigo_SAG>
+    <Variedad>PRIME SEEDLESS</Variedad>
+    <Lote>0106</Lote>
+    <SDP>60144</SDP>
+  </FEAL>
+ <FEAL>
+    <Id>105</Id>
+    <Productor>87723 SANTA LAURA</Productor>
+    <Codigo_SAG>87723</Codigo_SAG>
+    <Variedad>SWEET NECTAR</Variedad>
+    <Lote>0101</Lote>
+    <SDP>60145</SDP>
+  </FEAL>
+ <FEAL>
+    <Id>106</Id>
+    <Productor>87699 LAS PINTADAS</Productor>
+    <Codigo_SAG>87699</Codigo_SAG>
+    <Variedad>AUTUMN ROYAL</Variedad>
+    <Lote>3248</Lote>
+    <SDP>60099</SDP>
+  </FEAL>
+ <FEAL>
+    <Id>106</Id>
+    <Productor>87699 LAS PINTADAS</Productor>
+    <Codigo_SAG>87699</Codigo_SAG>
+    <Variedad>RED GLOBE</Variedad>
+    <Lote>2330</Lote>
+    <SDP>60103</SDP>
+  </FEAL>
+ <FEAL>
+    <Id>106</Id>
+    <Productor>87699 LAS PINTADAS</Productor>
+    <Codigo_SAG>87699</Codigo_SAG>
+    <Variedad>RED GLOBE</Variedad>
+    <Lote>3141</Lote>
+    <SDP>60102</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>106</Id>
+    <Productor>87699 LAS PINTADAS</Productor>
+    <Codigo_SAG>87699</Codigo_SAG>
+    <Variedad>KRISSY</Variedad>
+    <Lote>3540</Lote>
+    <SDP>60101</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>106</Id>
+    <Productor>87699 LAS PINTADAS</Productor>
+    <Codigo_SAG>87699</Codigo_SAG>
+    <Variedad>AUTUMN ROYAL</Variedad>
+    <Lote>4247</Lote>
+    <SDP>60100</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>107</Id>
+    <Productor>87612 LAS TERRAZAS</Productor>
+    <Codigo_SAG>87612</Codigo_SAG>
+    <Variedad>CANDY HEARTS</Variedad>
+    <Lote>0410</Lote>
+    <SDP>60034</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>107</Id>
+    <Productor>87612 LAS TERRAZAS</Productor>
+    <Codigo_SAG>87612</Codigo_SAG>
+    <Variedad>PRIME SEEDLESS</Variedad>
+    <Lote>M0101</Lote>
+    <SDP>60048</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>107</Id>
+    <Productor>87612 LAS TERRAZAS</Productor>
+    <Codigo_SAG>87612</Codigo_SAG>
+    <Variedad>PRIME SEEDLESS</Variedad>
+    <Lote>0207</Lote>
+    <SDP>60048</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>107</Id>
+    <Productor>87612 LAS TERRAZAS</Productor>
+    <Codigo_SAG>87612</Codigo_SAG>
+    <Variedad>TIMCO</Variedad>
+    <Lote>0104</Lote>
+    <SDP>60023</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>107</Id>
+    <Productor>87612 LAS TERRAZAS</Productor>
+    <Codigo_SAG>87612</Codigo_SAG>
+    <Variedad>SWEET GLOBE</Variedad>
+    <Lote>0105</Lote>
+    <SDP>60036</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>107</Id>
+    <Productor>87612 LAS TERRAZAS</Productor>
+    <Codigo_SAG>87612</Codigo_SAG>
+    <Variedad>SWEET GLOBE</Variedad>
+    <Lote>0609</Lote>
+    <SDP>60045</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>107</Id>
+    <Productor>87612 LAS TERRAZAS</Productor>
+    <Codigo_SAG>87612</Codigo_SAG>
+    <Variedad>SWEET GLOBE</Variedad>
+    <Lote>1822</Lote>
+    <SDP>60035</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>107</Id>
+    <Productor>87612 LAS TERRAZAS</Productor>
+    <Codigo_SAG>87612</Codigo_SAG>
+    <Variedad>AUTUMN CRISP</Variedad>
+    <Lote>0105</Lote>
+    <SDP>60037</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>107</Id>
+    <Productor>87612 LAS TERRAZAS</Productor>
+    <Codigo_SAG>87612</Codigo_SAG>
+    <Variedad>SWEET GLOBE</Variedad>
+    <Lote>2325</Lote>
+    <SDP>60047</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>108</Id>
+    <Productor>90367 LA CAPILLA</Productor>
+    <Codigo_SAG>90367</Codigo_SAG>
+    <Variedad>MELODY</Variedad>
+    <Lote>1617</Lote>
+    <SDP>60213</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>108</Id>
+    <Productor>90367 LA CAPILLA</Productor>
+    <Codigo_SAG>90367</Codigo_SAG>
+    <Variedad>ARRA 15</Variedad>
+    <Lote>0506</Lote>
+    <SDP>60214</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>108</Id>
+    <Productor>90367 LA CAPILLA</Productor>
+    <Codigo_SAG>90367</Codigo_SAG>
+    <Variedad>RED GLOBE</Variedad>
+    <Lote>0710</Lote>
+    <SDP>60215</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>108</Id>
+    <Productor>90367 LA CAPILLA</Productor>
+    <Codigo_SAG>90367</Codigo_SAG>
+    <Variedad>TIMCO</Variedad>
+    <Lote>1113</Lote>
+    <SDP>60216</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>108</Id>
+    <Productor>90367 LA CAPILLA</Productor>
+    <Codigo_SAG>90367</Codigo_SAG>
+    <Variedad>SUGRAONE</Variedad>
+    <Lote>M1819</Lote>
+    <SDP>60217</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>108</Id>
+    <Productor>90367 LA CAPILLA</Productor>
+    <Codigo_SAG>90367</Codigo_SAG>
+    <Variedad>SUGRAONE</Variedad>
+    <Lote>2021</Lote>
+    <SDP>60217</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>110</Id>
+    <Productor>87703 EL CHILE</Productor>
+    <Codigo_SAG>87703</Codigo_SAG>
+    <Variedad>ALLISON</Variedad>
+    <Lote>1415</Lote>
+    <SDP>60104</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>110</Id>
+    <Productor>87703 EL CHILE</Productor>
+    <Codigo_SAG>87703</Codigo_SAG>
+    <Variedad>ALLISON</Variedad>
+    <Lote>4958</Lote>
+    <SDP>60104</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>110</Id>
+    <Productor>87703 EL CHILE</Productor>
+    <Codigo_SAG>87703</Codigo_SAG>
+    <Variedad>ALLISON</Variedad>
+    <Lote>5959</Lote>
+    <SDP>60166</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>110</Id>
+    <Productor>87703 EL CHILE</Productor>
+    <Codigo_SAG>87703</Codigo_SAG>
+    <Variedad>TIMCO</Variedad>
+    <Lote>6063</Lote>
+    <SDP>60166</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>110</Id>
+    <Productor>87703 EL CHILE</Productor>
+    <Codigo_SAG>87703</Codigo_SAG>
+    <Variedad>KRISSY</Variedad>
+    <Lote>6467</Lote>
+    <SDP>60105</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>110</Id>
+    <Productor>87703 EL CHILE</Productor>
+    <Codigo_SAG>87703</Codigo_SAG>
+    <Variedad>PRIME SEEDLESS</Variedad>
+    <Lote>0305</Lote>
+    <SDP>60106</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>110</Id>
+    <Productor>87703 EL CHILE</Productor>
+    <Codigo_SAG>87703</Codigo_SAG>
+    <Variedad>PRIME SEEDLESS</Variedad>
+    <Lote>1213</Lote>
+    <SDP>60107</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>110</Id>
+    <Productor>87703 EL CHILE</Productor>
+    <Codigo_SAG>87703</Codigo_SAG>
+    <Variedad>SWEET GLOBE</Variedad>
+    <Lote>0107</Lote>
+    <SDP>60108</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>111</Id>
+    <Productor>87706 LA BALLENA</Productor>
+    <Codigo_SAG>87706</Codigo_SAG>
+    <Variedad>AUTUMN CRISP</Variedad>
+    <Lote>0610</Lote>
+    <SDP>60051</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>111</Id>
+    <Productor>87706 LA BALLENA</Productor>
+    <Codigo_SAG>87706</Codigo_SAG>
+    <Variedad>AUTUMN CRISP</Variedad>
+    <Lote>1114</Lote>
+    <SDP>60053</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>111</Id>
+    <Productor>87706 LA BALLENA</Productor>
+    <Codigo_SAG>87706</Codigo_SAG>
+    <Variedad>AUTUMN CRISP</Variedad>
+    <Lote>1519</Lote>
+    <SDP>60054</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>111</Id>
+    <Productor>87706 LA BALLENA</Productor>
+    <Codigo_SAG>87706</Codigo_SAG>
+    <Variedad>SWEET GLOBE</Variedad>
+    <Lote>1013</Lote>
+    <SDP>60055</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>111</Id>
+    <Productor>87706 LA BALLENA</Productor>
+    <Codigo_SAG>87706</Codigo_SAG>
+    <Variedad>SWEET GLOBE</Variedad>
+    <Lote>1417</Lote>
+    <SDP>60056</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>113</Id>
+    <Productor>87720 LA ROTONDA</Productor>
+    <Codigo_SAG>87720</Codigo_SAG>
+    <Variedad>TIMPSON</Variedad>
+    <Lote>1921</Lote>
+    <SDP>60146</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>113</Id>
+    <Productor>87720 LA ROTONDA</Productor>
+    <Codigo_SAG>87720</Codigo_SAG>
+    <Variedad>ALLISON</Variedad>
+    <Lote>1618</Lote>
+    <SDP>60160</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>113</Id>
+    <Productor>87720 LA ROTONDA</Productor>
+    <Codigo_SAG>87720</Codigo_SAG>
+    <Variedad>AUTUMN CRISP</Variedad>
+    <Lote>0102</Lote>
+    <SDP>60149</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>113</Id>
+    <Productor>87720 LA ROTONDA</Productor>
+    <Codigo_SAG>87720</Codigo_SAG>
+    <Variedad>SWEET GLOBE</Variedad>
+    <Lote>0101</Lote>
+    <SDP>60152</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>113</Id>
+    <Productor>87720 LA ROTONDA</Productor>
+    <Codigo_SAG>87720</Codigo_SAG>
+    <Variedad>SWEET GLOBE</Variedad>
+    <Lote>0203</Lote>
+    <SDP>60154</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>114</Id>
+    <Productor>87720 LAS COMPUERTAS</Productor>
+    <Codigo_SAG>87720</Codigo_SAG>
+    <Variedad>AUTUMN CRISP</Variedad>
+    <Lote>0304</Lote>
+    <SDP>60157</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>114</Id>
+    <Productor>87720 LAS COMPUERTAS</Productor>
+    <Codigo_SAG>87720</Codigo_SAG>
+    <Variedad>SWEET GLOBE</Variedad>
+    <Lote>0204</Lote>
+    <SDP>60158</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>115</Id>
+    <Productor>90364 VIÑA DEL CERRO II</Productor>
+    <Codigo_SAG>90364</Codigo_SAG>
+    <Variedad>SUGRAONE</Variedad>
+    <Lote>0105</Lote>
+    <SDP>60202</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>115</Id>
+    <Productor>90364 VIÑA DEL CERRO II</Productor>
+    <Codigo_SAG>90364</Codigo_SAG>
+    <Variedad>SUGRAONE</Variedad>
+    <Lote>M0607</Lote>
+    <SDP>60202</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>115</Id>
+    <Productor>90364 VIÑA DEL CERRO II</Productor>
+    <Codigo_SAG>90364</Codigo_SAG>
+    <Variedad>SWEET GLOBE</Variedad>
+    <Lote>1212</Lote>
+    <SDP>60203</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>115</Id>
+    <Productor>90364 VIÑA DEL CERRO II</Productor>
+    <Codigo_SAG>90364</Codigo_SAG>
+    <Variedad>TIMCO</Variedad>
+    <Lote>0811</Lote>
+    <SDP>60203</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>115</Id>
+    <Productor>90364 VIÑA DEL CERRO II</Productor>
+    <Codigo_SAG>90364</Codigo_SAG>
+    <Variedad>TIMCO</Variedad>
+    <Lote>2122</Lote>
+    <SDP>60204</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>115</Id>
+    <Productor>90364 VIÑA DEL CERRO II</Productor>
+    <Codigo_SAG>90364</Codigo_SAG>
+    <Variedad>ARRA 15</Variedad>
+    <Lote>1314</Lote>
+    <SDP>60205</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>115</Id>
+    <Productor>90364 VIÑA DEL CERRO II</Productor>
+    <Codigo_SAG>90364</Codigo_SAG>
+    <Variedad>ARRA 15</Variedad>
+    <Lote>1620</Lote>
+    <SDP>60206</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>115</Id>
+    <Productor>90364 VIÑA DEL CERRO II</Productor>
+    <Codigo_SAG>90364</Codigo_SAG>
+    <Variedad>IVORY</Variedad>
+    <Lote>1515</Lote>
+    <SDP>60209</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>116</Id>
+    <Productor>87724 BUENOS AIRES</Productor>
+    <Codigo_SAG>87724</Codigo_SAG>
+    <Variedad>SUGRAONE</Variedad>
+    <Lote>0712</Lote>
+    <SDP>60186</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>116</Id>
+    <Productor>87724 BUENOS AIRES</Productor>
+    <Codigo_SAG>87724</Codigo_SAG>
+    <Variedad>ALLISON</Variedad>
+    <Lote>1314</Lote>
+    <SDP>60187</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>116</Id>
+    <Productor>87724 BUENOS AIRES</Productor>
+    <Codigo_SAG>87724</Codigo_SAG>
+    <Variedad>THOMPSON SEEDLESS</Variedad>
+    <Lote>0110</Lote>
+    <SDP>60188</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>116</Id>
+    <Productor>87724 BUENOS AIRES</Productor>
+    <Codigo_SAG>87724</Codigo_SAG>
+    <Variedad>RED GLOBE</Variedad>
+    <Lote>0509</Lote>
+    <SDP>60189</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>117</Id>
+    <Productor>90364 EL RETAMO</Productor>
+    <Codigo_SAG>90364</Codigo_SAG>
+    <Variedad>SWEET CELEBRATION</Variedad>
+    <Lote>0107</Lote>
+    <SDP>60200</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>117</Id>
+    <Productor>90364 EL RETAMO</Productor>
+    <Codigo_SAG>90364</Codigo_SAG>
+    <Variedad>GREAT GREEN</Variedad>
+    <Lote>0607</Lote>
+    <SDP>60201</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>118</Id>
+    <Productor>90367 CASAS VIEJAS</Productor>
+    <Codigo_SAG>90367</Codigo_SAG>
+    <Variedad>RED GLOBE</Variedad>
+    <Lote>0102</Lote>
+    <SDP>60218</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>118</Id>
+    <Productor>90367 CASAS VIEJAS</Productor>
+    <Codigo_SAG>90367</Codigo_SAG>
+    <Variedad>TIMCO</Variedad>
+    <Lote>0710</Lote>
+    <SDP>60218</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>401</Id>
+    <Productor>106957 HUANCARA</Productor>
+    <Codigo_SAG>106957</Codigo_SAG>
+    <Variedad>ARRA 15</Variedad>
+    <Lote>0108</Lote>
+    <SDP>60250</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>401</Id>
+    <Productor>106957 HUANCARA</Productor>
+    <Codigo_SAG>106957</Codigo_SAG>
+    <Variedad>ARRA 15</Variedad>
+    <Lote>0707</Lote>
+    <SDP>60255</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>401</Id>
+    <Productor>106957 HUANCARA</Productor>
+    <Codigo_SAG>106957</Codigo_SAG>
+    <Variedad>ARRA 35</Variedad>
+    <Lote>0505</Lote>
+    <SDP></SDP>
+  </FEAL>
+  <FEAL>
+    <Id>401</Id>
+    <Productor>106957 HUANCARA</Productor>
+    <Codigo_SAG>106957</Codigo_SAG>
+    <Variedad>GREAT GREEN</Variedad>
+    <Lote>1010</Lote>
+    <SDP>60255</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>401</Id>
+    <Productor>106957 HUANCARA</Productor>
+    <Codigo_SAG>106957</Codigo_SAG>
+    <Variedad>KRISSY</Variedad>
+    <Lote>1415</Lote>
+    <SDP>60251</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>401</Id>
+    <Productor>106957 HUANCARA</Productor>
+    <Codigo_SAG>106957</Codigo_SAG>
+    <Variedad>SWEET GLOBE</Variedad>
+    <Lote>1617</Lote>
+    <SDP>60253</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>401</Id>
+    <Productor>106957 HUANCARA</Productor>
+    <Codigo_SAG>106957</Codigo_SAG>
+    <Variedad>TIMCO</Variedad>
+    <Lote>0209</Lote>
+    <SDP>60251</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>401</Id>
+    <Productor>106957 HUANCARA</Productor>
+    <Codigo_SAG>106957</Codigo_SAG>
+    <Variedad>TIMCO</Variedad>
+    <Lote>1212</Lote>
+    <SDP>60252</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>401</Id>
+    <Productor>106957 HUANCARA</Productor>
+    <Codigo_SAG>106957</Codigo_SAG>
+    <Variedad>TIMCO</Variedad>
+    <Lote>0611</Lote>
+    <SDP>60254</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>401</Id>
+    <Productor>106957 HUANCARA</Productor>
+    <Codigo_SAG>106957</Codigo_SAG>
+    <Variedad>TIMPSON</Variedad>
+    <Lote>0113</Lote>
+    <SDP>60248</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>402</Id>
+    <Productor>106958 MAITENCILLO</Productor>
+    <Codigo_SAG>106958</Codigo_SAG>
+    <Variedad>ALLISON</Variedad>
+    <Lote>7374</Lote>
+    <SDP>60245</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>402</Id>
+    <Productor>106958 MAITENCILLO</Productor>
+    <Codigo_SAG>106958</Codigo_SAG>
+    <Variedad>ARRA 15</Variedad>
+    <Lote>7576</Lote>
+    <SDP>60247</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>402</Id>
+    <Productor>106958 MAITENCILLO</Productor>
+    <Codigo_SAG>106958</Codigo_SAG>
+    <Variedad>ARRA 29</Variedad>
+    <Lote>0102</Lote>
+    <SDP>60243</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>402</Id>
+    <Productor>106958 MAITENCILLO</Productor>
+    <Codigo_SAG>106958</Codigo_SAG>
+    <Variedad>INIAGRAPE-ONE (MAYLEN)</Variedad>
+    <Lote>0407</Lote>
+    <SDP>60244</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>402</Id>
+    <Productor>106958 MAITENCILLO</Productor>
+    <Codigo_SAG>106958</Codigo_SAG>
+    <Variedad>SUGRA 53</Variedad>
+    <Lote>0303</Lote>
+    <SDP></SDP>
+  </FEAL>
+  <FEAL>
+    <Id>402</Id>
+    <Productor>106958 MAITENCILLO</Productor>
+    <Codigo_SAG>106958</Codigo_SAG>
+    <Variedad>KRISSY</Variedad>
+    <Lote>0372</Lote>
+    <SDP>60246</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>403</Id>
+    <Productor>106955 SANTA BERNARDITA</Productor>
+    <Codigo_SAG>106955</Codigo_SAG>
+    <Variedad>ALLISON</Variedad>
+    <Lote>7273</Lote>
+    <SDP>60238</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>403</Id>
+    <Productor>106955 SANTA BERNARDITA</Productor>
+    <Codigo_SAG>106955</Codigo_SAG>
+    <Variedad>ARRA 15</Variedad>
+    <Lote>4260</Lote>
+    <SDP>60237</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>403</Id>
+    <Productor>106955 SANTA BERNARDITA</Productor>
+    <Codigo_SAG>106955</Codigo_SAG>
+    <Variedad>ARRA 29</Variedad>
+    <Lote>6969</Lote>
+    <SDP>60239</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>403</Id>
+    <Productor>106955 SANTA BERNARDITA</Productor>
+    <Codigo_SAG>106955</Codigo_SAG>
+    <Variedad>IVORY</Variedad>
+    <Lote>0101</Lote>
+    <SDP>60237</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>403</Id>
+    <Productor>106955 SANTA BERNARDITA</Productor>
+    <Codigo_SAG>106955</Codigo_SAG>
+    <Variedad>SWEET FAVORS</Variedad>
+    <Lote>6667</Lote>
+    <SDP>60242</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>403</Id>
+    <Productor>106955 SANTA BERNARDITA</Productor>
+    <Codigo_SAG>106955</Codigo_SAG>
+    <Variedad>SWEET GLOBE</Variedad>
+    <Lote>5051</Lote>
+    <SDP>60264</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>403</Id>
+    <Productor>106955 SANTA BERNARDITA</Productor>
+    <Codigo_SAG>106955</Codigo_SAG>
+    <Variedad>TIMPSON</Variedad>
+    <Lote>3941</Lote>
+    <SDP>60240</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>403</Id>
+    <Productor>106955 SANTA BERNARDITA</Productor>
+    <Codigo_SAG>106955</Codigo_SAG>
+    <Variedad>TIMCO</Variedad>
+    <Lote>3738</Lote>
+    <SDP>60234</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>403</Id>
+    <Productor>106955 SANTA BERNARDITA</Productor>
+    <Codigo_SAG>106955</Codigo_SAG>
+    <Variedad>TIMCO</Variedad>
+    <Lote>4348</Lote>
+    <SDP>60235</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>403</Id>
+    <Productor>106955 SANTA BERNARDITA</Productor>
+    <Codigo_SAG>106955</Codigo_SAG>
+    <Variedad>TIMCO</Variedad>
+    <Lote>5858</Lote>
+    <SDP>60236</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>403</Id>
+    <Productor>106955 SANTA BERNARDITA</Productor>
+    <Codigo_SAG>106955</Codigo_SAG>
+    <Variedad>TIMPSON</Variedad>
+    <Lote>6465</Lote>
+    <SDP>60241</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>404</Id>
+    <Productor>106956 SANTA ADRIANA</Productor>
+    <Codigo_SAG>106956</Codigo_SAG>
+    <Variedad>AUTUMN CRISP</Variedad>
+    <Lote>0110</Lote>
+    <SDP>60224</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>404</Id>
+    <Productor>106956 SANTA ADRIANA</Productor>
+    <Codigo_SAG>106956</Codigo_SAG>
+    <Variedad>AUTUMN CRISP</Variedad>
+    <Lote>1215</Lote>
+    <SDP>60225</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>404</Id>
+    <Productor>106956 SANTA ADRIANA</Productor>
+    <Codigo_SAG>106956</Codigo_SAG>
+    <Variedad>CANDY HEARTS</Variedad>
+    <Lote>0609</Lote>
+    <SDP>60226</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>404</Id>
+    <Productor>106956 SANTA ADRIANA</Productor>
+    <Codigo_SAG>106956</Codigo_SAG>
+    <Variedad>ALLISON</Variedad>
+    <Lote>3133</Lote>
+    <SDP>60227</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>404</Id>
+    <Productor>106956 SANTA ADRIANA</Productor>
+    <Codigo_SAG>106956</Codigo_SAG>
+    <Variedad>SWEET CELEBRATION</Variedad>
+    <Lote>1718</Lote>
+    <SDP>60227</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>404</Id>
+    <Productor>106956 SANTA ADRIANA</Productor>
+    <Codigo_SAG>106956</Codigo_SAG>
+    <Variedad>SWEET CELEBRATION</Variedad>
+    <Lote>2224</Lote>
+    <SDP>60232</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>404</Id>
+    <Productor>106956 SANTA ADRIANA</Productor>
+    <Codigo_SAG>106956</Codigo_SAG>
+    <Variedad>SWEET GLOBE</Variedad>
+    <Lote>1120</Lote>
+    <SDP>60228</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>404</Id>
+    <Productor>106956 SANTA ADRIANA</Productor>
+    <Codigo_SAG>106956</Codigo_SAG>
+    <Variedad>SWEET GLOBE</Variedad>
+    <Lote>3436</Lote>
+    <SDP>60229</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>404</Id>
+    <Productor>106956 SANTA ADRIANA</Productor>
+    <Codigo_SAG>106956</Codigo_SAG>
+    <Variedad>SWEET GLOBE</Variedad>
+    <Lote>6168</Lote>
+    <SDP>60231</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>404</Id>
+    <Productor>106956 SANTA ADRIANA</Productor>
+    <Codigo_SAG>106956</Codigo_SAG>
+    <Variedad>SWEET GLOBE</Variedad>
+    <Lote>4649</Lote>
+    <SDP>60230</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>404</Id>
+    <Productor>106956 SANTA ADRIANA</Productor>
+    <Codigo_SAG>106956</Codigo_SAG>
+    <Variedad>TIMPSON</Variedad>
+    <Lote>1616</Lote>
+    <SDP>60229</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>404</Id>
+    <Productor>106956 SANTA ADRIANA</Productor>
+    <Codigo_SAG>106956</Codigo_SAG>
+    <Variedad>TIMPSON</Variedad>
+    <Lote>2530</Lote>
+    <SDP>60232</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>404</Id>
+    <Productor>106956 SANTA ADRIANA</Productor>
+    <Codigo_SAG>106956</Codigo_SAG>
+    <Variedad>TIMPSON</Variedad>
+    <Lote>5456</Lote>
+    <SDP>60233</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>408</Id>
+    <Productor>87197 LA COMPAÑÍA</Productor>
+    <Codigo_SAG>87197</Codigo_SAG>
+    <Variedad>AUTUMN CRISP</Variedad>
+    <Lote>1619</Lote>
+    <SDP>60259</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>408</Id>
+    <Productor>87197 LA COMPAÑÍA</Productor>
+    <Codigo_SAG>87197</Codigo_SAG>
+    <Variedad>KRISSY</Variedad>
+    <Lote>0815</Lote>
+    <SDP>60258</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>408</Id>
+    <Productor>87197 LA COMPAÑÍA</Productor>
+    <Codigo_SAG>87197</Codigo_SAG>
+    <Variedad>SWEET CELEBRATION</Variedad>
+    <Lote>0204</Lote>
+    <SDP>60256</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>408</Id>
+    <Productor>87197 LA COMPAÑÍA</Productor>
+    <Codigo_SAG>87197</Codigo_SAG>
+    <Variedad>SWEET GLOBE</Variedad>
+    <Lote>0120</Lote>
+    <SDP>60256</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>408</Id>
+    <Productor>87197 LA COMPAÑÍA</Productor>
+    <Codigo_SAG>87197</Codigo_SAG>
+    <Variedad>SWEET GLOBE</Variedad>
+    <Lote>0707</Lote>
+    <SDP>60257</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>410</Id>
+    <Productor>89323 LOS PIMIENTOS</Productor>
+    <Codigo_SAG>89323</Codigo_SAG>
+    <Variedad>SWEET GLOBE</Variedad>
+    <Lote>0102</Lote>
+    <SDP>60260</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>410</Id>
+    <Productor>89323 LOS PIMIENTOS</Productor>
+    <Codigo_SAG>89323</Codigo_SAG>
+    <Variedad>SWEET GLOBE</Variedad>
+    <Lote>0304</Lote>
+    <SDP>60261</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>410</Id>
+    <Productor>89323 LOS PIMIENTOS</Productor>
+    <Codigo_SAG>89323</Codigo_SAG>
+    <Variedad>SWEET GLOBE</Variedad>
+    <Lote>0509</Lote>
+    <SDP>60262</SDP>
+  </FEAL>
+  <FEAL>
+    <Id>410</Id>
+    <Productor>89323 LOS PIMIENTOS</Productor>
+    <Codigo_SAG>89323</Codigo_SAG>
+    <Variedad>SWEET GLOBE</Variedad>
+    <Lote>1010</Lote>
+    <SDP>60263</SDP>
+  </FEAL>
+</Catrastro>

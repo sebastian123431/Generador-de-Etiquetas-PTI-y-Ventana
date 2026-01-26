@@ -1,0 +1,881 @@
+{\rtf1\ansi\deff0
+{\fonttbl{\f0\fnil\fcharset0 Arial;}{\f1\fnil\fcharset0 Courier New;}}
+{\colortbl;\red0\green0\blue0;\red0\green51\blue102;\red76\green175\blue80;}
+
+\paperw11906\paperh16838\margl1134\margr1134\margt1134\margb1134
+
+{\pard\qc\fs48\b DOCUMENTACIÓN TÉCNICA\par}
+{\pard\qc\fs36\b VOICE PICK CODE\par}
+{\pard\qc\fs24 Sistema de Generación de Etiquetas con Códigos de Barras\par}
+{\pard\qc\fs20 Versión 1.0.0.0\par}
+\line\line
+
+{\pard\fs28\b\cf2 1. DESCRIPCIÓN GENERAL DEL PROYECTO\par}
+\line
+{\pard\fs20 Voice Pick Code es una aplicación de Windows Forms (.NET Framework 3.5) diseñada para generar etiquetas con códigos de barras para productos agrícolas, específicamente uvas de mesa y cítricos. La aplicación permite crear etiquetas personalizadas con información como GTIN, variedad, productor, recibidor, fechas, calibres y otros datos relevantes para el empaque y exportación de productos.\par}
+\line
+
+{\pard\fs24\b Características Principales:\par}
+{\pard\fs20
+\bullet  Generación de códigos de barras EAN-13\line
+\bullet  Soporte para múltiples formatos de etiquetas (PTI, VENTANA, VENTANA CÍTRICOS)\line
+\bullet  Impresión directa en impresoras de etiquetas Zebra\line
+\bullet  Gestión de datos de productores y recibidores mediante XML\line
+\bullet  Interfaz gráfica intuitiva con visualización previa\line
+\bullet  Exportación de etiquetas como imágenes\line
+\bullet  Cálculo automático de checksums para códigos de barras\par}
+\line\line
+
+{\pard\fs28\b\cf2 2. ESTRUCTURA DEL PROYECTO\par}
+\line
+
+{\pard\fs24\b 2.1 Namespace Principal\par}
+{\pard\fs20 {\f1 WindowsFormsApplication1} - Contiene todas las interfaces de usuario y lógica de negocio.\par}
+\line
+
+{\pard\fs24\b 2.2 Archivos y Componentes Principales\par}
+\line
+
+{\pard\fs20\b Program.cs\par}
+{\pard\fs18
+{\b Propósito:} Punto de entrada de la aplicación.\line
+{\b Funcionalidad:}\line
+\bullet  Inicializa la aplicación con estilos visuales habilitados\line
+\bullet  Establece el renderizado de texto compatible\line
+\bullet  Lanza el formulario principal (Principal.cs)\line
+\bullet  Manejo global de excepciones con mensajes de error detallados\par}
+\line
+
+{\pard\fs20\b Principal.cs\par}
+{\pard\fs18
+{\b Propósito:} Formulario principal de la aplicación, actúa como menú de navegación.\line
+{\b Funcionalidad:}\line
+\bullet  Menú con tres opciones principales de generación de etiquetas:\line
+   - PTI: Para etiquetas de uvas con formato estándar PTI\line
+   - VENTANA: Para etiquetas de uvas con formato ventana\line
+   - VENTANA CÍTRICOS: Para etiquetas de cítricos\line
+\bullet  Efectos visuales en botones (cambio de color al pasar el mouse)\line
+\bullet  Abre los formularios correspondientes según la selección del usuario\par}
+\line
+
+{\pard\fs20\b frm_generador.cs\par}
+{\pard\fs18
+{\b Propósito:} Generador de etiquetas formato PTI para uvas.\line
+{\b Funcionalidad Principal:}\line
+\bullet  Selección de variedad, GTIN, tipo de embalaje, productor y recibidor\line
+\bullet  Búsqueda automática de códigos finales para PLU con peso fijo\line
+\bullet  Función {\f1 Busca_CodigoFinalCodigo_PLU_PESO_FIJO()}: Mapea combinaciones de variedad y GTIN a códigos específicos\line
+\bullet  Función {\f1 Busca_CodigoFinalCodigo_PLU()}: Mapea combinaciones de variedad, GTIN y embalaje a códigos PLU específicos\line
+\bullet  Utiliza generadores de códigos de barras de los namespaces:\line
+   - LabelKit\line
+   - LabelKit_2022\line
+   - LabelKit_8045\line
+   - LabelKit_PLU_2022\line
+   - LabelKit_PLU_8045\line
+\bullet  Genera etiquetas con información detallada del producto\line
+\bullet  Permite impresión directa y guardado de imágenes\par}
+\line
+
+{\pard\fs20\b frm_generadorVentana.cs\par}
+{\pard\fs18
+{\b Propósito:} Generador de etiquetas formato VENTANA para uvas.\line
+{\b Funcionalidad Principal:}\line
+\bullet  Interfaz para etiquetas con formato de ventana transparente\line
+\bullet  Función {\f1 Busca_Fecha_PTI()}: Convierte fechas agrícolas a formato legible (Nov/DD/YYYY)\line
+\bullet  Función {\f1 Busca_Fecha_YYMMDD()}: Convierte fechas agrícolas a formato YYMMDD\line
+\bullet  Lectura de datos XML para productores y recibidores\line
+\bullet  Gestión de múltiples combinaciones de embalaje\line
+\bullet  Utiliza generadores específicos:\line
+   - LabelKit_8045\line
+   - LabelKit_PLU_8045\line
+\bullet  Validación de entrada numérica en campos GTIN\line
+\bullet  Función de copia al portapapeles con rotación de imagen\line
+\bullet  Impresión en impresora Zebra ZDesigner S4M-203dpi\par}
+\line
+
+{\pard\fs20\b frm_generadorVentana_Citricos.cs\par}
+{\pard\fs18
+{\b Propósito:} Generador de etiquetas formato VENTANA específico para cítricos.\line
+{\b Funcionalidad Principal:}\line
+\bullet  Variedades soportadas:\line
+   - 01 ORONULE\line
+   - 02 OROGRANDE\line
+   - 03 CLEMENULE\line
+   - 04 TANGO\line
+\bullet  Función {\f1 LlenaVariedad()}: Carga las variedades de cítricos disponibles\line
+\bullet  Función {\f1 LlenaEmbalaje()}: Carga tipos de embalaje específicos para cítricos:\line
+   - CG145A, CG150A, CG163A\line
+   - CG150S, CG163S\line
+   - CG145APM, CG150APM, CG163APM\line
+   - CG150SPM, CG163SPM\line
+\bullet  Soporte para peso fijo y peso variable\line
+\bullet  Validación de formato de fecha (dd-MM-yyyy)\line
+\bullet  Selección de calibre, categoría, packing, productor y recibidor\line
+\bullet  Generación con LabelKit_8045 y LabelKit_PLU_8045\line
+\bullet  Impresión personalizada en impresora Zebra con tamaño 315x168\par}
+\line
+
+{\pard\fs20\b Ean13.cs\par}
+{\pard\fs18
+{\b Propósito:} Clase para validación y gestión de códigos de barras EAN-13.\line
+{\b Funcionalidad:}\line
+\bullet  Constructor {\f1 Ean13(string code, string title)}: Crea instancia con validación\line
+\bullet  Constructor {\f1 Ean13(string code, string title, Ean13Settings settings)}: Crea instancia con configuración personalizada\line
+\bullet  Función {\f1 CheckCode(string code)}: Valida que el código:\line
+   - No sea nulo\line
+   - Tenga exactamente 13 dígitos\line
+   - Todos los caracteres sean numéricos\line
+   - El dígito verificador sea correcto\line
+\bullet  Función {\f1 CalculateChecksum(string code)}: Calcula el dígito verificador EAN-13:\line
+   - Suma dígitos en posiciones pares multiplicados por 1\line
+   - Suma dígitos en posiciones impares multiplicados por 3\line
+   - Retorna (10 - (suma mod 10)) mod 10\line
+\bullet  Almacena configuración, código y título del código de barras\par}
+\line
+
+{\pard\fs20\b Ean13Settings.cs\par}
+{\pard\fs18
+{\b Propósito:} Clase de configuración para la generación de códigos de barras.\line
+{\b Propiedades:}\line
+\bullet  {\f1 BarCodeHeight}: 120 píxeles - Altura del código de barras\line
+\bullet  {\f1 LeftMargin}: 10 píxeles - Margen izquierdo\line
+\bullet  {\f1 RightMargin}: 10 píxeles - Margen derecho\line
+\bullet  {\f1 TopMargin}: 10 píxeles - Margen superior\line
+\bullet  {\f1 BottomMargin}: 10 píxeles - Margen inferior\line
+\bullet  {\f1 BarWidth}: 2 píxeles - Ancho de cada barra del código\par}
+\line
+
+{\pard\fs20\b sf.cs\par}
+{\pard\fs18
+{\b Propósito:} Clase de utilidades generales para preparación de objetos y conversión de datos.\line
+{\b Funcionalidad:}\line
+\bullet  Función {\f1 preparaObjeto(object objeto)}: Inicializa propiedades de un objeto con valores predeterminados:\line
+   - string -> ""\line
+   - bool -> false\line
+   - int32 -> 0\line
+   - int64 -> 0\line
+   - double -> 0\line
+   - single -> 0.0\line
+   - DateTime -> DateTime.MinValue\line
+\bullet  Función {\f1 aFloat(string valor)}: Convierte string a float:\line
+   - Maneja valores vacíos (retorna 0)\line
+   - Reemplaza punto por coma para formato regional\line
+   - Manejo seguro de excepciones\line
+\bullet  Función {\f1 aFloat(int valor)}: Sobrecarga para convertir int a float\par}
+\line
+
+{\pard\fs20\b BarcodeGenerator.cs (Múltiples versiones)\par}
+{\pard\fs18
+{\b Ubicaciones:}\line
+\bullet  LabelKit\\BarcodeGenerator.cs\line
+\bullet  LabelKit_2022\\BarcodeGenerator.cs\line
+\bullet  LabelKit_8045\\BarcodeGenerator.cs\line
+\bullet  LabelKit_PLU\\BarcodeGenerator_PLU.cs\line
+\bullet  LabelKit_PLU_2022\\BarcodeGenerator_PLU.cs\line
+\bullet  LabelKit_PLU_8045\\BarcodeGenerator_PLU.cs\line
+\line
+{\b Propósito:} Generadores especializados para diferentes formatos de etiquetas.\line
+{\b Propiedades Configurables:}\line
+\bullet  {\f1 Width}: Ancho de la imagen (predeterminado: 640)\line
+\bullet  {\f1 Height}: Altura de la imagen (predeterminado: 130)\line
+\bullet  {\f1 HumanReadable}: Mostrar texto legible por humanos (predeterminado: true)\line
+\bullet  {\f1 FontSize}: Tamaño de fuente (predeterminado: 12)\line
+\bullet  {\f1 FontName}: Nombre de fuente (predeterminado: "Courier New")\line
+\bullet  {\f1 Centered}: Centrar el código de barras (predeterminado: false)\line
+\line
+{\b Diferencias entre versiones:}\line
+\bullet  LabelKit: Formato estándar básico\line
+\bullet  LabelKit_2022: Actualización para temporada 2022\line
+\bullet  LabelKit_8045: Formato específico para embalaje 8045\line
+\bullet  LabelKit_PLU_*: Versiones para códigos PLU (Price Look-Up)\par}
+\line\line
+
+{\pard\fs28\b\cf2 3. ARCHIVOS DE DATOS XML\par}
+\line
+
+{\pard\fs20\b Catrastro.xml\par}
+{\pard\fs18
+{\b Propósito:} Base de datos de productores.\line
+{\b Contenido:}\line
+\bullet  Información de productores registrados\line
+\bullet  Datos de identificación y certificaciones\line
+\bullet  Utilizado para llenar los ComboBox de productores en las interfaces\par}
+\line
+
+{\pard\fs20\b Recibidor.xml\par}
+{\pard\fs18
+{\b Propósito:} Base de datos de recibidores (destinatarios).\line
+{\b Contenido:}\line
+\bullet  Información de empresas recibidoras\line
+\bullet  Datos de contacto y envío\line
+\bullet  Utilizado para llenar los ComboBox de recibidores en las interfaces\par}
+\line
+
+{\pard\fs20\b Catrastro_SDP.xml\par}
+{\pard\fs18
+{\b Propósito:} Base de datos específica para Sistema de Producción (SDP).\line
+{\b Contenido:}\line
+\bullet  Información adicional de productores con certificación SDP\line
+\bullet  Datos complementarios para trazabilidad\par}
+\line\line
+
+{\pard\fs28\b\cf2 4. FLUJO DE TRABAJO DE LA APLICACIÓN\par}
+\line
+
+{\pard\fs20\b 4.1 Inicio de la Aplicación\par}
+{\pard\fs18
+1. {\f1 Program.Main()} se ejecuta\line
+2. Se habilitan estilos visuales de Windows\line
+3. Se abre el formulario {\f1 Principal}\line
+4. Se muestra el menú principal con tres opciones\par}
+\line
+
+{\pard\fs20\b 4.2 Generación de Etiquetas PTI\par}
+{\pard\fs18
+1. Usuario selecciona "PTI" desde el menú principal\line
+2. Se abre {\f1 frm_generador}\line
+3. Usuario ingresa:\line
+   - Variedad de uva\line
+   - Código GTIN\line
+   - Tipo de embalaje\line
+   - Productor\line
+   - Recibidor\line
+   - Otros datos según formato\line
+4. La aplicación busca el código PLU correspondiente usando las funciones de mapeo\line
+5. Se genera el código de barras EAN-13 con validación de checksum\line
+6. Se crea la imagen de la etiqueta usando el generador apropiado\line
+7. Se muestra vista previa en PictureBox\line
+8. Usuario puede:\line
+   - Copiar al portapapeles\line
+   - Imprimir directamente\line
+   - Guardar como imagen\par}
+\line
+
+{\pard\fs20\b 4.3 Generación de Etiquetas VENTANA\par}
+{\pard\fs18
+1. Usuario selecciona "VENTANA" desde el menú principal\line
+2. Se abre {\f1 frm_generadorVentana}\line
+3. La aplicación carga datos XML de productores y recibidores\line
+4. Usuario ingresa datos del producto\line
+5. La fecha agrícola se convierte automáticamente a formato PTI o YYMMDD\line
+6. Se genera la etiqueta con formato de ventana transparente\line
+7. Se utiliza {\f1 LabelKit_8045} para la generación\line
+8. Impresión configurada para Zebra S4M-203dpi\par}
+\line
+
+{\pard\fs20\b 4.4 Generación de Etiquetas VENTANA CÍTRICOS\par}
+{\pard\fs18
+1. Usuario selecciona "VENTANA CÍTRICOS" desde el menú principal\line
+2. Se abre {\f1 frm_generadorVentana_Citricos}\line
+3. Se cargan variedades específicas de cítricos\line
+4. Se cargan tipos de embalaje para cítricos\line
+5. Usuario selecciona variedad (ORONULE, OROGRANDE, CLEMENULE, TANGO)\line
+6. Usuario ingresa datos adicionales (calibre, fecha, peso, pallets)\line
+7. Se valida el formato de fecha (dd-MM-yyyy)\line
+8. Se genera etiqueta con dimensiones 315x168 píxeles\line
+9. Impresión en Zebra con configuración personalizada\par}
+\line\line
+
+{\pard\fs28\b\cf2 5. FUNCIONES CLAVE Y ALGORITMOS\par}
+\line
+
+{\pard\fs20\b 5.1 Validación de Código EAN-13\par}
+{\pard\fs18
+{\b Algoritmo en Ean13.CheckCode():}\line
+1. Verificar que el código no sea nulo\line
+2. Verificar longitud exacta de 13 caracteres\line
+3. Validar que todos sean dígitos numéricos\line
+4. Calcular checksum de los primeros 12 dígitos\line
+5. Comparar con el 13° dígito (verificador)\line
+6. Retornar true si coincide, false si no\par}
+\line
+
+{\pard\fs20\b 5.2 Cálculo de Checksum EAN-13\par}
+{\pard\fs18
+{\b Algoritmo en Ean13.CalculateChecksum():}\line
+{\f1
+   Entrada: código de 12 dígitos\line
+   suma = 0\line
+   Para i = 0 hasta 11:\line
+      Si i es par:\line
+         suma += dígito[i] * 1\line
+      Si i es impar:\line
+         suma += dígito[i] * 3\line
+   checksum = (10 - (suma mod 10)) mod 10\line
+   Retornar checksum
+}\par}
+\line
+
+{\pard\fs20\b 5.3 Mapeo de Códigos PLU\par}
+{\pard\fs18
+{\b Algoritmo en Busca_CodigoFinalCodigo_PLU():}\line
+1. Obtener variedad seleccionada\line
+2. Obtener GTIN ingresado\line
+3. Obtener tipo de embalaje\line
+4. Buscar en tabla de mapeo (estructura if-else if)\line
+5. Retornar código PLU correspondiente\line
+6. Si no hay coincidencia, retornar "ERROR ERROR"\line
+\line
+{\b Nota:} La función contiene cientos de combinaciones específicas de:\line
+\bullet  Variedad (11 Arrafifteen, 36 IFG Ten, 23 Sheegene 2, etc.)\line
+\bullet  GTIN (17808771844980, 17808771846359, etc.)\line
+\bullet  Tipo de embalaje (BZUNF, BZUHB, etc.)\par}
+\line
+
+{\pard\fs20\b 5.4 Conversión de Fechas Agrícolas\par}
+{\pard\fs18
+{\b Algoritmo en Busca_Fecha_PTI():}\line
+{\f1
+   Entrada: fecha agrícola "MMDD"\line
+   mes = primeros 2 caracteres\line
+   dia = últimos 2 caracteres\line
+   \line
+   Switch(mes):\line
+      "01" -> "Nov/" + dia + "/2025"\line
+      "02" -> "Dec/" + dia + "/2025"\line
+      "03" -> "Jan/" + dia + "/2026"\line
+      "04" -> "Feb/" + dia + "/2026"\line
+      "05" -> "Mar/" + dia + "/2026"\line
+      "06" -> "Apr/" + dia + "/2026"\line
+      "07" -> "May/" + dia + "/2026"\line
+      default -> "ERROR"\line
+   Retornar fecha formateada
+}\par}
+\line
+
+{\pard\fs20\b 5.5 Rotación de Imagen para Impresión\par}
+{\pard\fs18
+{\b Proceso en btn_copiar_Click():}\line
+1. Obtener imagen del PictureBox\line
+2. Rotar 90 grados en sentido horario\line
+3. Copiar al portapapeles\line
+4. Rotar 270 grados (restaurar orientación original)\line
+5. Mostrar en pantalla con orientación original\line
+\line
+{\b Razón:} Las impresoras Zebra requieren la imagen rotada para impresión correcta en etiquetas horizontales.\par}
+\line\line
+
+{\pard\fs28\b\cf2 6. CONFIGURACIÓN DE IMPRESIÓN\par}
+\line
+
+{\pard\fs20\b 6.1 Impresora Configurada\par}
+{\pard\fs18
+{\b Modelo:} ZDesigner S4M-203dpi ZPL\line
+{\b Resolución:} 203 DPI (dots per inch)\line
+{\b Lenguaje:} ZPL (Zebra Programming Language)\par}
+\line
+
+{\pard\fs20\b 6.2 Configuración de Página\par}
+{\pard\fs18
+{\b Para etiquetas VENTANA CÍTRICOS:}\line
+\bullet  Tamaño personalizado: 315 x 168 píxeles\line
+\bullet  Márgenes: 0 en todos los lados\line
+\bullet  Orientación: Según rotación de imagen\line
+\line
+{\b Para otras etiquetas:}\line
+\bullet  Tamaño según generador específico\line
+\bullet  Márgenes definidos en Ean13Settings\par}
+\line
+
+{\pard\fs20\b 6.3 Proceso de Impresión\par}
+{\pard\fs18
+{\b Algoritmo en documentoAimprimir():}\line
+{\f1
+   Crear objeto Graphics desde evento PrintPage\line
+   Dibujar imagen del PictureBox en posición (0,0)\line
+   Liberar recursos Graphics\line
+   Manejar excepciones con mensaje de error
+}\par}
+\line\line
+
+{\pard\fs28\b\cf2 7. GESTIÓN DE DATOS XML\par}
+\line
+
+{\pard\fs20\b 7.1 Carga de Productores\par}
+{\pard\fs18
+{\b Función Llena_Productor():}\line
+1. Leer archivo XML "Catrastro.xml"\line
+2. Crear DataTable desde XML\line
+3. Convertir a EnumerableRowCollection para LINQ\line
+4. Crear DataView y ordenar por "Productor DESC"\line
+5. Extraer columna "Productor" en tabla única\line
+6. Asignar como DataSource del ComboBox\line
+7. Establecer DisplayMember y ValueMember\par}
+\line
+
+{\pard\fs20\b 7.2 Carga de Recibidores\par}
+{\pard\fs18
+{\b Función Llena_Recibidor():}\line
+1. Leer archivo XML "Recibidor.xml"\line
+2. Crear DataTable desde XML\line
+3. Convertir a EnumerableRowCollection para LINQ\line
+4. Crear DataView y ordenar por "Recibidor asc"\line
+5. Extraer columna "Recibidor" en tabla única\line
+6. Asignar como DataSource del ComboBox\line
+7. Establecer DisplayMember y ValueMember\par}
+\line
+
+{\pard\fs20\b 7.3 Modo de Lectura XML\par}
+{\pard\fs18
+{\b Método:} {\f1 datos.ReadXml(archivo, XmlReadMode.Auto)}\line
+{\b Características:}\line
+\bullet  XmlReadMode.Auto detecta automáticamente esquema y datos\line
+\bullet  Manejo de excepciones silencioso (catch vacío)\line
+\bullet  Carga en memoria para consultas rápidas con LINQ\par}
+\line\line
+
+{\pard\fs28\b\cf2 8. INTERFAZ DE USUARIO\par}
+\line
+
+{\pard\fs20\b 8.1 Controles Comunes\par}
+{\pard\fs18
+\bullet  {\b ComboBox}: Selección de variedad, embalaje, productor, recibidor, calibre, categoría\line
+\bullet  {\b TextBox}: Ingreso de GTIN, fecha, peso, número de pallets\line
+\bullet  {\b PictureBox}: Vista previa de la etiqueta generada\line
+\bullet  {\b Button}: Acciones de generar, copiar, imprimir, guardar\line
+\bullet  {\b CheckBox}: Opciones como peso fijo/variable\line
+\bullet  {\b SaveFileDialog}: Selección de ubicación para guardar imagen\par}
+\line
+
+{\pard\fs20\b 8.2 Validaciones de Entrada\par}
+{\pard\fs18
+{\b Validación de GTIN (txt_gtin_KeyPress):}\line
+\bullet  Solo permite dígitos numéricos\line
+\bullet  Permite teclas de control (Backspace, Delete, etc.)\line
+\bullet  Permite separadores\line
+\bullet  Rechaza cualquier otro carácter\line
+\line
+{\b Validación de Fecha (txt_date_Leave):}\line
+\bullet  Verifica formato "dd-MM-yyyy"\line
+\bullet  Utiliza DateTime.ParseExact() para validación estricta\line
+\bullet  Muestra mensaje de error si formato es incorrecto\line
+\bullet  Devuelve foco al campo si hay error\par}
+\line
+
+{\pard\fs20\b 8.3 Efectos Visuales\par}
+{\pard\fs18
+{\b En Principal.cs:}\line
+\bullet  {\f1 Button_MouseEnter()}: Cambia color a verde (76, 175, 80) al pasar mouse\line
+\bullet  {\f1 Button_MouseLeave()}: Restaura color azul oscuro (0, 51, 102) al salir\line
+\bullet  Proporciona retroalimentación visual inmediata al usuario\par}
+\line\line
+
+{\pard\fs28\b\cf2 9. FORMATOS DE ETIQUETA SOPORTADOS\par}
+\line
+
+{\pard\fs20\b 9.1 Formato PTI (Produce Traceability Initiative)\par}
+{\pard\fs18
+{\b Características:}\line
+\bullet  Código de barras EAN-13 o UPC\line
+\bullet  Información de trazabilidad completa\line
+\bullet  GTIN del producto\line
+\bullet  Lote, fecha, productor\line
+\bullet  Cumple con estándares PTI para exportación\par}
+\line
+
+{\pard\fs20\b 9.2 Formato VENTANA\par}
+{\pard\fs18
+{\b Características:}\line
+\bullet  Diseño con área transparente (ventana)\line
+\bullet  Permite visualización del producto\line
+\bullet  Código PLU con peso variable o fijo\line
+\bullet  Información visible a través de la ventana\line
+\bullet  Fecha agrícola convertida a formato legible\par}
+\line
+
+{\pard\fs20\b 9.3 Formato VENTANA CÍTRICOS\par}
+{\pard\fs18
+{\b Características:}\line
+\bullet  Específico para 4 variedades de cítricos\line
+\bullet  10 tipos de embalaje soportados\line
+\bullet  Calibre específico para cítricos\line
+\bullet  Dimensiones optimizadas (315x168)\line
+\bullet  Compatible con normativas de exportación de cítricos\par}
+\line\line
+
+{\pard\fs28\b\cf2 10. VARIEDADES Y CÓDIGOS SOPORTADOS\par}
+\line
+
+{\pard\fs20\b 10.1 Variedades de Uvas Verdes\par}
+{\pard\fs18
+\bullet  02 Thompson Seedless\line
+\bullet  05 Sugraone\line
+\bullet  08 Prime Seedless\line
+\bullet  11 Arrafifteen - Arra15\line
+\bullet  23 Sheegene 2 - Timpson™\line
+\bullet  30 Sheegene 17 - Great Green™\line
+\bullet  34 Sheegene 21 - Ivory™\line
+\bullet  36 IFG Ten - Sweet Globe™\line
+\bullet  38 Sugrathirtyfive - Autumn Crisp®\par}
+\line
+
+{\pard\fs20\b 10.2 Variedades de Uvas Rojas\par}
+{\pard\fs18
+\bullet  15 Sheegene 20 - Allison™\line
+\bullet  17 Sheegene 13 - Timco™\line
+\bullet  21 Sheegene 12 - Krissy™\line
+\bullet  27 Arratwentynine - Arra29\line
+\bullet  32 IFG Three - Sweet Celebration™\line
+\bullet  35 IFG Nineteen - Candy Hearts™\line
+\bullet  50 IFG Eighteen - Sweet Nectar™\par}
+\line
+
+{\pard\fs20\b 10.3 Variedades de Uvas Negras\par}
+{\pard\fs18
+\bullet  09 Autumn Royal\line
+\bullet  22 Blagratwo - Melody™\line
+\bullet  31 IFG Sixteen - Sweet Favors™\line
+\bullet  91 Maylen® (Iniagrape-one cv.)\par}
+\line
+
+{\pard\fs20\b 10.4 Variedades de Cítricos\par}
+{\pard\fs18
+\bullet  01 ORONULE\line
+\bullet  02 OROGRANDE\line
+\bullet  03 CLEMENULE\line
+\bullet  04 TANGO\par}
+\line\line
+
+{\pard\fs28\b\cf2 11. TIPOS DE EMBALAJE\par}
+\line
+
+{\pard\fs20\b 11.1 Embalaje para Uvas\par}
+{\pard\fs18
+\bullet  BZUNF - Bolsa con zipper, uso normal, fijo\line
+\bullet  BZUHB - Bolsa con zipper, uso half box\line
+\bullet  Otros según especificaciones del cliente\par}
+\line
+
+{\pard\fs20\b 11.2 Embalaje para Cítricos\par}
+{\pard\fs18
+{\b Serie A (Americano):}\line
+\bullet  CG145A - Caja genérica 14.5 kg americano\line
+\bullet  CG150A - Caja genérica 15.0 kg americano\line
+\bullet  CG163A - Caja genérica 16.3 kg americano\line
+\line
+{\b Serie S (Supermercado):}\line
+\bullet  CG150S - Caja genérica 15.0 kg supermercado\line
+\bullet  CG163S - Caja genérica 16.3 kg supermercado\line
+\line
+{\b Serie APM (Americano Peso Mínimo):}\line
+\bullet  CG145APM - Caja genérica 14.5 kg americano peso mínimo\line
+\bullet  CG150APM - Caja genérica 15.0 kg americano peso mínimo\line
+\bullet  CG163APM - Caja genérica 16.3 kg americano peso mínimo\line
+\line
+{\b Serie SPM (Supermercado Peso Mínimo):}\line
+\bullet  CG150SPM - Caja genérica 15.0 kg supermercado peso mínimo\line
+\bullet  CG163SPM - Caja genérica 16.3 kg supermercado peso mínimo\par}
+\line\line
+
+{\pard\fs28\b\cf2 12. CÓDIGOS GTIN REGISTRADOS\par}
+\line
+
+{\pard\fs20\b 12.1 GTINs para Uvas Verdes\par}
+{\pard\fs18
+\bullet  0089532100250\line
+\bullet  17808771844980\line
+\bullet  17808771840220\line
+\bullet  0860005496440\line
+\bullet  0895321002259\line
+\bullet  0899734002196\line
+\bullet  4061461641597\line
+\bullet  0895321002822\line
+\bullet  0011110613752\line
+\bullet  0887271000478\line
+\bullet  0021130141432\line
+\bullet  4061464439528\line
+\bullet  4061463959423\line
+\bullet  0095829210112\line
+\bullet  0095829210655\par}
+\line
+
+{\pard\fs20\b 12.2 GTINs para Uvas Rojas\par}
+{\pard\fs18
+\bullet  17808771846350\line
+\bullet  17808771840230\line
+\bullet  0089532100249\line
+\bullet  0810129460278\line
+\bullet  0816426014732\line
+\bullet  0827575001283\line
+\bullet  0827575001238\line
+\bullet  0860005496457\line
+\bullet  0895321002792\line
+\bullet  0899734002202\line
+\bullet  0021130141449\line
+\bullet  0899734002714\line
+\bullet  0011110613769\line
+\bullet  0887271000461\line
+\bullet  0095829210105\line
+\bullet  17808771846359\line
+\bullet  17808771833441\par}
+\line
+
+{\pard\fs20\b 12.3 GTINs para Uvas Negras\par}
+{\pard\fs18
+\bullet  17808771840562\line
+\bullet  17808771842757\line
+\bullet  1780877184056K\line
+\bullet  1780877184022K\line
+\bullet  1780877184023K\line
+\bullet  17808771834912\par}
+\line\line
+
+{\pard\fs28\b\cf2 13. REQUISITOS DEL SISTEMA\par}
+\line
+
+{\pard\fs20\b 13.1 Requisitos de Software\par}
+{\pard\fs18
+\bullet  Sistema Operativo: Windows XP o superior\line
+\bullet  .NET Framework 3.5 o superior\line
+\bullet  Impresora Zebra con driver ZPL instalado (para impresión)\par}
+\line
+
+{\pard\fs20\b 13.2 Requisitos de Hardware\par}
+{\pard\fs18
+\bullet  Procesador: 1 GHz o superior\line
+\bullet  Memoria RAM: 512 MB mínimo (1 GB recomendado)\line
+\bullet  Espacio en disco: 50 MB para la aplicación\line
+\bullet  Resolución de pantalla: 1024x768 mínimo\line
+\bullet  Impresora de etiquetas Zebra S4M-203dpi o compatible\par}
+\line
+
+{\pard\fs20\b 13.3 Archivos Requeridos\par}
+{\pard\fs18
+\bullet  Voice Pick Code.exe\line
+\bullet  Catrastro.xml (base de datos de productores)\line
+\bullet  Recibidor.xml (base de datos de recibidores)\line
+\bullet  Catrastro_SDP.xml (datos SDP)\line
+\bullet  Voice Pick Code.ico (icono de la aplicación)\line
+\bullet  DLLs del .NET Framework 3.5\par}
+\line\line
+
+{\pard\fs28\b\cf2 14. MANEJO DE ERRORES\par}
+\line
+
+{\pard\fs20\b 14.1 Errores de Validación\par}
+{\pard\fs18
+\bullet  {\b Código EAN-13 inválido}: Se lanza ArgumentException con mensaje "Invalid EAN-13 code specified."\line
+\bullet  {\b Código de longitud incorrecta}: Se valida en CheckCode() y retorna false\line
+\bullet  {\b Formato de fecha incorrecto}: MessageBox con "Formato de Fecha Incorrecto." y foco al campo\par}
+\line
+
+{\pard\fs20\b 14.2 Errores de Datos\par}
+{\pard\fs18
+\bullet  {\b Combinación no encontrada}: Función Busca_CodigoFinalCodigo_PLU() retorna "ERROR ERROR"\line
+\bullet  {\b Archivo XML no encontrado}: Se captura Exception y se lanza (throw) para manejo superior\line
+\bullet  {\b Error de conversión de fecha}: Se captura y muestra mensaje específico\par}
+\line
+
+{\pard\fs20\b 14.3 Errores de Impresión\par}
+{\pard\fs18
+\bullet  {\b Impresora no disponible}: Se muestra MessageBox con "Impresion: " + mensaje de error\line
+\bullet  {\b Error en generación de imagen}: Se captura Exception en documentoAimprimir()\line
+\bullet  {\b Error al guardar imagen}: MessageBox con "Error al guardar la Imagen"\par}
+\line
+
+{\pard\fs20\b 14.4 Manejo Global\par}
+{\pard\fs18
+{\b En Program.Main():}\line
+\bullet  Try-catch global captura todas las excepciones no manejadas\line
+\bullet  MessageBox muestra:\line
+   - Mensaje de error\line
+   - Stack trace completo\line
+   - Título "Error Critical"\line
+   - Icono de error\line
+\bullet  Permite diagnóstico detallado en caso de fallo crítico\par}
+\line\line
+
+{\pard\fs28\b\cf2 15. MEJORES PRÁCTICAS DE USO\par}
+\line
+
+{\pard\fs20\b 15.1 Antes de Generar Etiquetas\par}
+{\pard\fs18
+1. Verificar que los archivos XML estén actualizados\line
+2. Confirmar que la impresora Zebra está conectada y encendida\line
+3. Validar que el papel de etiquetas está cargado correctamente\line
+4. Verificar que los códigos GTIN son correctos y registrados\par}
+\line
+
+{\pard\fs20\b 15.2 Al Generar Etiquetas\par}
+{\pard\fs18
+1. Seleccionar el formato correcto (PTI, VENTANA, o VENTANA CÍTRICOS)\line
+2. Ingresar todos los campos requeridos\line
+3. Verificar vista previa antes de imprimir\line
+4. Usar función "Copiar" para revisión en otro programa si es necesario\line
+5. Guardar imagen de respaldo si la etiqueta es crítica\par}
+\line
+
+{\pard\fs20\b 15.3 Validación de Resultados\par}
+{\pard\fs18
+1. Verificar que el código de barras sea legible con escáner\line
+2. Confirmar que toda la información sea visible y correcta\line
+3. Validar formato de fecha y conversiones\line
+4. Verificar que el checksum EAN-13 sea válido\line
+5. Comprobar que el código PLU corresponda al producto\par}
+\line\line
+
+{\pard\fs28\b\cf2 16. MANTENIMIENTO Y ACTUALIZACIONES\par}
+\line
+
+{\pard\fs20\b 16.1 Actualización de Productores\par}
+{\pard\fs18
+1. Abrir Catrastro.xml en editor XML o Excel\line
+2. Agregar nueva entrada con estructura:\line
+   {\f1 <Productor>Nombre del Productor</Productor>}\line
+3. Guardar archivo manteniendo formato XML válido\line
+4. Reiniciar aplicación para cargar nuevos datos\par}
+\line
+
+{\pard\fs20\b 16.2 Actualización de Recibidores\par}
+{\pard\fs18
+1. Abrir Recibidor.xml en editor XML o Excel\line
+2. Agregar nueva entrada con estructura:\line
+   {\f1 <Recibidor>Nombre del Recibidor</Recibidor>}\line
+3. Guardar archivo manteniendo formato XML válido\line
+4. Reiniciar aplicación para cargar nuevos datos\par}
+\line
+
+{\pard\fs20\b 16.3 Agregar Nuevas Variedades\par}
+{\pard\fs18
+{\b Para Uvas (frm_generador.cs):}\line
+1. Localizar función Busca_CodigoFinalCodigo_PLU()\line
+2. Agregar nuevos bloques if-else con combinaciones:\line
+   {\f1 if (variedad == "XX Nombre" && gtin == "XXXXX" && embalaje == "XX")}\line
+   {\f1 \{}\line
+   {\f1    result = "código PLU correspondiente";}\line
+   {\f1 \}}\line
+3. Recompilar aplicación\line
+\line
+{\b Para Cítricos (frm_generadorVentana_Citricos.cs):}\line
+1. Localizar función LlenaVariedad()\line
+2. Agregar nueva entrada:\line
+   {\f1 list.Add(new Item("05 Nueva Variedad", 1));}\line
+3. Recompilar aplicación\par}
+\line
+
+{\pard\fs20\b 16.4 Agregar Nuevos GTINs\par}
+{\pard\fs18
+1. Localizar las funciones de búsqueda correspondientes\line
+2. Agregar nueva condición con el nuevo GTIN\line
+3. Asociar al código PLU o resultado correspondiente\line
+4. Validar que el GTIN cumpla con estándar EAN-13\line
+5. Recompilar y probar con casos de prueba\par}
+\line\line
+
+{\pard\fs28\b\cf2 17. SOLUCIÓN DE PROBLEMAS COMUNES\par}
+\line
+
+{\pard\fs20\b 17.1 "Invalid EAN-13 code specified"\par}
+{\pard\fs18
+{\b Causa:} El código ingresado no cumple con el formato EAN-13\line
+{\b Solución:}\line
+\bullet  Verificar que el código tenga exactamente 13 dígitos\line
+\bullet  Confirmar que el dígito verificador sea correcto\line
+\bullet  Usar solo caracteres numéricos\par}
+\line
+
+{\pard\fs20\b 17.2 "Formato de Fecha Incorrecto"\par}
+{\pard\fs18
+{\b Causa:} La fecha no cumple con el formato dd-MM-yyyy\line
+{\b Solución:}\line
+\bullet  Ingresar fecha como: 01-12-2025\line
+\bullet  Usar guiones como separadores\line
+\bullet  Verificar que día y mes sean válidos\par}
+\line
+
+{\pard\fs20\b 17.3 Código PLU retorna "ERROR ERROR"\par}
+{\pard\fs18
+{\b Causa:} No existe mapeo para la combinación variedad-GTIN-embalaje\line
+{\b Solución:}\line
+\bullet  Verificar que la combinación esté registrada en el código\line
+\bullet  Contactar al administrador para agregar nueva combinación\line
+\bullet  Revisar que los valores ingresados sean exactos (sin espacios extra)\par}
+\line
+
+{\pard\fs20\b 17.4 Impresora no imprime\par}
+{\pard\fs18
+{\b Causas posibles:}\line
+\bullet  Impresora no está encendida o conectada\line
+\bullet  Driver ZPL no está instalado\line
+\bullet  Nombre de impresora no coincide con "ZDesigner S4M-203dpi ZPL"\line
+\line
+{\b Solución:}\line
+\bullet  Verificar conexión física de la impresora\line
+\bullet  Instalar driver desde sitio web de Zebra\line
+\bullet  Ajustar nombre de impresora en el código si es necesario\line
+\bullet  Probar con impresión de prueba desde Windows\par}
+\line
+
+{\pard\fs20\b 17.5 Archivos XML no se cargan\par}
+{\pard\fs18
+{\b Causa:} Archivos XML no están en el directorio correcto\line
+{\b Solución:}\line
+\bullet  Verificar que Catrastro.xml y Recibidor.xml estén en el mismo directorio que el .exe\line
+\bullet  Confirmar que los archivos XML tienen formato válido\line
+\bullet  Revisar permisos de lectura del archivo\par}
+\line\line
+
+{\pard\fs28\b\cf2 18. GLOSARIO DE TÉRMINOS\par}
+\line
+
+{\pard\fs20
+{\b EAN-13:} European Article Number de 13 dígitos, estándar internacional de código de barras.\line
+\line
+{\b GTIN:} Global Trade Item Number, identificador único de productos comerciales.\line
+\line
+{\b PLU:} Price Look-Up, código utilizado para identificar productos en puntos de venta.\line
+\line
+{\b PTI:} Produce Traceability Initiative, iniciativa para trazabilidad de productos frescos.\line
+\line
+{\b Checksum:} Dígito verificador calculado matemáticamente para validar integridad de código.\line
+\line
+{\b ZPL:} Zebra Programming Language, lenguaje de programación para impresoras Zebra.\line
+\line
+{\b DPI:} Dots Per Inch, resolución de impresión (puntos por pulgada).\line
+\line
+{\b Variedad:} Tipo específico de uva o cítrico (ej: Thompson Seedless, Tango).\line
+\line
+{\b Embalaje:} Tipo de empaque o caja utilizada para el producto.\line
+\line
+{\b Calibre:} Tamaño del fruto según estándares de clasificación.\line
+\line
+{\b Fecha Agrícola:} Formato de fecha específico usado en industria agrícola (MMDD).\line
+\line
+{\b Peso Fijo:} Producto con peso estandarizado en el empaque.\line
+\line
+{\b Peso Variable:} Producto con peso que varía entre unidades.\par}
+\line\line
+
+{\pard\fs28\b\cf2 19. INFORMACIÓN DE VERSIÓN\par}
+\line
+
+{\pard\fs20
+{\b Versión:} 1.0.0.0\line
+{\b Fecha de Compilación:} 2013\line
+{\b Framework:} .NET Framework 3.5\line
+{\b Lenguaje:} C# 7.3\line
+{\b Plataforma:} Windows Forms\line
+{\b Copyright:} Copyright © 2013\line
+{\b GUID del Proyecto:} 7A0DAAF4-5A5A-4CDE-922B-56D5305153FC\line
+{\b Assembly GUID:} b1bd31e3-5258-44c2-8c5d-0d09087e6696\par}
+\line\line
+
+{\pard\fs28\b\cf2 20. CONTACTO Y SOPORTE\par}
+\line
+
+{\pard\fs20
+Para actualizaciones, mantenimiento o agregar nuevas funcionalidades al sistema Voice Pick Code, contactar al equipo de desarrollo con la siguiente información:\line
+\line
+\bullet  Versión actual de la aplicación\line
+\bullet  Descripción detallada del problema o requisito\line
+\bullet  Capturas de pantalla si es aplicable\line
+\bullet  Archivos XML actuales\line
+\bullet  Logs de error si están disponibles\par}
+\line\line
+
+{\pard\qc\fs16\i
+--- FIN DEL DOCUMENTO ---\line
+Generado automáticamente\line
+Documento técnico completo del proyecto Voice Pick Code\par}
+
+}

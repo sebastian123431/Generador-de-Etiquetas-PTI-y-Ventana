@@ -1,0 +1,276 @@
+<?xml version="1.0" standalone="yes"?>
+<Catrastro>
+  <xs:schema id="Recibidor" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:element name="Recibidor" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+      <xs:complexType>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="FEAL_Recibidor">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Recibidor" type="xs:string" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
+  <FEAL_Recibidor>
+    <Recibidor>BONAFRUTTA/ ARA</Recibidor>
+  </FEAL_Recibidor>  
+  <FEAL_Recibidor>
+    <Recibidor>CH ROBINSON/ WELCH</Recibidor>
+  </FEAL_Recibidor>  
+  <FEAL_Recibidor>
+    <Recibidor>COPEFRUT</Recibidor>
+  </FEAL_Recibidor>  
+  <FEAL_Recibidor>
+    <Recibidor>COURCHESNE</Recibidor>
+  </FEAL_Recibidor> 
+  <FEAL_Recibidor>
+    <Recibidor>DALIAN YIDU</Recibidor>
+  </FEAL_Recibidor>   
+  <FEAL_Recibidor>
+    <Recibidor>DEREK L_WANG_(IPG)</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>DIVINE FLAVOR</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>DIVINE FLAVOR (WC)</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>DIVINE FLAVOR/ COSTCO</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>DIVINE FLAVOR/ COSTCO(WC)</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>DIVINE FLAVOR/ KROGER</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>DIVINE FLAVOR/ KROGER(WC)</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>DOLE ITALIA</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>E-MART</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>EMS INTERNATIONAL</Recibidor>
+  </FEAL_Recibidor>
+  <!-- <FEAL_Recibidor>
+    <Recibidor>FRUTAM</Recibidor>
+  </FEAL_Recibidor> -->
+  <FEAL_Recibidor>
+    <Recibidor>FRUTAM S.A.</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>GIUMARRA</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>GIUMARRA (WC)</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>GIUMARRA/ COSTCO</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>GIUMARRA/ PUBLIX</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>GIUMARRA/ KROGER</Recibidor>
+  </FEAL_Recibidor>
+  <!-- <FEAL_Recibidor>
+    <Recibidor>GIUMARRA/ KROGER(WC)</Recibidor>
+  </FEAL_Recibidor> -->
+  <FEAL_Recibidor>
+    <Recibidor>GRAPECO FARMS</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>GRAPECO FARMS (WC)</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>GRAPECO FARMS/ COSTCO(WC)</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>GRAPECO FARMS/ KROGER</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>GRAPECO FARMS/ KROGER(WC)</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>GRAPEMAN FARMS</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>GRAPEMAN FARMS (WC)</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>GRUPO_FARTURA DE_HORTIFRUT S.A.</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>GUAN CHAN_INTERNATIONAL_(IPG)</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>IPG</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>JAC VANDENBERG INC.</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>JAC VANDENBERG INC./KROGER</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>JAC VANDENBERG INC./KROGER(WC)</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>JINWON COREA (IPG)</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>JTC COREA (IPG)</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>KINGO FRUITS</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>KOPKE</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>KOPKE (WC)</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>KOPKE/ COSTCO</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>KOPKE/ COSTCO (WC)</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>MLA MEXICO</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>NORTH AMERICAN PRODUCE</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>NEW_WORLD_CHILE S.A.</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>OLG FOOD TRADE</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>PACIFIC TRELLIS</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>PACIFIC TRELLIS (WC)</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>PACIFIC TRELLIS/ ALBERTSON(WC)</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>PACIFIC TRELLIS/ COSTCO</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>PACIFIC TRELLIS/ COSTCO(WC)</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>PACIFIC TRELLIS/ DULCINEA</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>PACIFIC TRELLIS/ DULCINEA(WC)</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>PACIFIC TRELLIS/ KROGER</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>PACIFIC TRELLIS/ KROGER(WC)</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>PACIFIC TRELLIS/ PUBLIX</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>PACIFIC TRELLIS/ SAFEWAY</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>PACIFIC TRELLIS/ SAFEWAY(WC)</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>PACIFIC TRELLIS/ SAM'S</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>ROBINSON FRESH</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>SARCOFRUIT</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>SIERRA PRODUCE</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>SIERRA PRODUCE (WC)</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>SIERRA PRODUCE ALDI</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>SIERRA PRODUCE/ COSTCO</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>SIERRA PRODUCE/ COSTCO(WC)</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>SIERRA PRODUCE/ KROGER</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>SIERRA PRODUCE/ KROGER(WC)</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>SIERRA PRODUCE/ RAZZLE.DAZZLE</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>SIN RECIBIDOR</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>SPREAFICO</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>SUNWOO</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>SUN PACIFIC</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>SUPERMERCADOS XTRA S.A.</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>TOPSUN</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>TRIDGE COREA (IPG)</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>UMINA BROS., INC.</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>VANDENBERG</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>VANDENBERG/ KROGER</Recibidor>
+  </FEAL_Recibidor>
+<!--   <FEAL_Recibidor>
+    <Recibidor>VANDENBERG/ KROGER(WC)</Recibidor>
+  </FEAL_Recibidor> -->
+  <FEAL_Recibidor>
+    <Recibidor>VANGUARD</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>WALMART</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>WALMART (WC)</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>WING MAU</Recibidor>
+  </FEAL_Recibidor>
+  <FEAL_Recibidor>
+    <Recibidor>WLH MARKETING (IPG)</Recibidor>
+  </FEAL_Recibidor>
+</Catrastro>
