@@ -153,12 +153,11 @@ namespace WindowsFormsApplication1
             Application.DoEvents();
         }
 
-        [STAThread]
-        static void Main()
+        private void AppendLog(string message)
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new TestSincronizacion());
+            txtLog.AppendText(message + Environment.NewLine);
+            txtLog.ScrollToCaret();
+            Application.DoEvents();
         }
     }
 }

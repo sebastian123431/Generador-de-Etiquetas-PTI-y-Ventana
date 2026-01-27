@@ -8,28 +8,17 @@ using System.Drawing.Imaging;
 using System.Drawing.Printing;
 using System.Text;
 using System.Windows.Forms;
-using LabelKit;
-using LabelKit_2022;
-using LabelKit_8045;
-using LabelKit_PLU_2022;
-using LabelKit_PLU_8045;
+// using LabelKit;
+// using LabelKit_2022;
+// using LabelKit_8045;
+// using LabelKit_PLU_2022;
+// using LabelKit_PLU_8045;
 using WindowsFormsApplication1.Data;
 
-namespace GeneradorEtiquetasPTIyVentana.WindowsFormsApplication1
+namespace WindowsFormsApplication1
 {
     public partial class frm_generador : Form
     {
-        public class Item
-        {
-            public string Code { get; set; }
-            public int Id { get; set; }
-            public Item(string code, int id)
-            {
-                Code = code;
-                Id = id;
-            }
-        }
-
 		/// <summary>
 		/// Constructor del formulario generador PTI
 		/// Inicializa todos los componentes visuales del formulario
@@ -350,15 +339,10 @@ namespace GeneradorEtiquetasPTIyVentana.WindowsFormsApplication1
             // Consulta la base de datos y filtra por el campo peso_fijo
             var db = DatabaseManager.Instance;
             var embalajes = db.GetTipoEmbalajePorPesoFijo(this.chb_pesofijo.Checked);
-
-            // Configura el combo box con la lista de tipos de embalaje obtenida de la BD
-            this.cmb_tipo_embalaje.DisplayMember = "Name";
-            this.cmb_tipo_embalaje.ValueMember = "Value";
-
-
+            this.cmb_tipo_embalaje.DisplayMember = "Dato";
+            this.cmb_tipo_embalaje.ValueMember = "Id";
             this.cmb_tipo_embalaje.DataSource = embalajes;
             this.cmb_tipo_embalaje.SelectedIndex = embalajes.Count > 0 ? 0 : -1;
-
         }
 
 		// Token: 0x06000118 RID: 280 RVA: 0x00014185 File Offset: 0x00012385
@@ -538,17 +522,5 @@ namespace GeneradorEtiquetasPTIyVentana.WindowsFormsApplication1
         private void Button_MouseEnter(object sender, EventArgs e) { }
         private void Button_MouseLeave(object sender, EventArgs e) { }
         private void label8_Click(object sender, EventArgs e) { }
-	}
-
-	public class Item
-	{
-		public string Name { get; set; }
-		public object Value { get; set; }
-
-		public Item(string name, object value)
-		{
-			Name = name;
-			Value = value;
-		}
 	}
 }

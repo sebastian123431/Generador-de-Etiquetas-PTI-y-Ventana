@@ -8,8 +8,6 @@ using System.Drawing.Imaging;
 using System.Drawing.Printing;
 using System.Text;
 using System.Windows.Forms;
-using LabelKit_8045;
-using LabelKit_PLU_8045;
 
 namespace WindowsFormsApplication1
 {
@@ -709,8 +707,8 @@ namespace WindowsFormsApplication1
 			string text2 = string.Empty;
 			text = this.Busca_Fecha_PTI();
 			text2 = this.Busca_Fecha_YYMMDD();
-			BarcodeGenerator barcodeGenerator = new BarcodeGenerator();
-			BarcodeGenerator_PLU barcodeGenerator_PLU = new BarcodeGenerator_PLU();
+			//BarcodeGenerator barcodeGenerator = new BarcodeGenerator();
+			//BarcodeGenerator_PLU barcodeGenerator_PLU = new BarcodeGenerator_PLU();
 			Graphics g = Graphics.FromImage(new Bitmap(1, 1));
 			Graphics graphics = Graphics.FromImage(new Bitmap(1, 1));
 			Bitmap image = new Bitmap(1, 1, PixelFormat.Format32bppArgb);
@@ -719,7 +717,7 @@ namespace WindowsFormsApplication1
 			string empty = string.Empty;
 			SizeF sizeF = default(SizeF);
 			string empty2 = string.Empty;
-			Image image2 = barcodeGenerator.DrawCode128(g, "123456789", 0, 0);
+			Image image2 = null;// barcodeGenerator.DrawCode128(g, "123456789", 0, 0);
 			string text3 = this.cmb_titulo2.Text.Trim();
 			string text4 = this.cmb_productor.Text.Trim().Substring(0, 6).ToString() + this.cmb_variedad_Imprime.Text.Trim().Substring(0, 2).ToString() + this.cmb_lote.Text.Trim();
 			string empty3 = string.Empty;
@@ -1025,7 +1023,7 @@ namespace WindowsFormsApplication1
 				{
 					font = new Font("arial", 36f, FontStyle.Bold);
 					StringFormat stringFormat3 = new StringFormat();
-					stringFormat3.Alignment = StringAlignment.Center;
+				stringFormat3.Alignment = StringAlignment.Center;
 					SolidBrush brush3 = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
 					graphics2.DrawString("", font, brush3, new Point(670, 520), stringFormat3);
 				}
@@ -1134,7 +1132,7 @@ namespace WindowsFormsApplication1
 				}
 				try
 				{
-					font = new Font("arial", (float)array5[num3], FontStyle.Bold);
+					font = new Font("arial", (float)array3[num3], FontStyle.Bold);
 					StringFormat stringFormat3 = new StringFormat();
 					stringFormat3.Alignment = StringAlignment.Center;
 					SolidBrush brush3 = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
@@ -1145,7 +1143,7 @@ namespace WindowsFormsApplication1
 				}
 				try
 				{
-					font = new Font("arial", (float)array5[num3], FontStyle.Bold);
+					font = new Font("arial", (float)array3[num3], FontStyle.Bold);
 					StringFormat stringFormat4 = new StringFormat();
 					stringFormat4.Alignment = StringAlignment.Center;
 					SolidBrush brush4 = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
@@ -1156,7 +1154,7 @@ namespace WindowsFormsApplication1
 				}
 				try
 				{
-					font = new Font("arial", (float)array5[num3], FontStyle.Bold);
+					font = new Font("arial", (float)array3[num3], FontStyle.Bold);
 					StringFormat stringFormat6 = new StringFormat();
 					stringFormat6.Alignment = StringAlignment.Center;
 					SolidBrush brush6 = new SolidBrush(Color.FromArgb(255, 0, 0, 0));

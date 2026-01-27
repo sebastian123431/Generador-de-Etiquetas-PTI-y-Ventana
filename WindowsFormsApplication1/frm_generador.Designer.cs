@@ -1,4 +1,4 @@
-﻿namespace GeneradorEtiquetasPTIyVentana.WindowsFormsApplication1
+﻿namespace WindowsFormsApplication1
 {
 	/// <summary>
 	/// Clase parcial frm_generador - Parte Designer (generada automáticamente)
@@ -119,7 +119,7 @@
             this.lbl_codigo1.BackColor = System.Drawing.Color.Black;
             this.lbl_codigo1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_codigo1.ForeColor = System.Drawing.SystemColors.Window;
-            this.lbl_codigo1.Location = new System.Drawing.Point(973, 23);
+            this.lbl_codigo1.Location = new System.Drawing.Point(873, 23);
             this.lbl_codigo1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbl_codigo1.Name = "lbl_codigo1";
             this.lbl_codigo1.Size = new System.Drawing.Size(29, 20);
@@ -133,7 +133,7 @@
             this.lbl_codigo2.BackColor = System.Drawing.Color.Black;
             this.lbl_codigo2.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_codigo2.ForeColor = System.Drawing.SystemColors.Window;
-            this.lbl_codigo2.Location = new System.Drawing.Point(1007, 15);
+            this.lbl_codigo2.Location = new System.Drawing.Point(907, 15);
             this.lbl_codigo2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbl_codigo2.Name = "lbl_codigo2";
             this.lbl_codigo2.Size = new System.Drawing.Size(43, 29);
@@ -722,7 +722,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            this.ClientSize = new System.Drawing.Size(1113, 848);
+            this.ClientSize = new System.Drawing.Size(1000, 800);
             this.Controls.Add(this.button7);
             this.Controls.Add(this.btn_guardar);
             this.Controls.Add(this.label3);

@@ -7,8 +7,6 @@ using System.Drawing.Imaging;
 using System.Drawing.Printing;
 using System.Text;
 using System.Windows.Forms;
-using LabelKit_8045;
-using LabelKit_PLU_8045;
 
 namespace WindowsFormsApplication1
 {
@@ -546,8 +544,8 @@ namespace WindowsFormsApplication1
 		private void DibujaEtiquetaCOMPLETA()
 		{
 			// Inicializa generadores de códigos de barras
-			BarcodeGenerator barcodeGenerator = new BarcodeGenerator();
-			BarcodeGenerator_PLU barcodeGenerator_PLU = new BarcodeGenerator_PLU();
+			//BarcodeGenerator barcodeGenerator = new BarcodeGenerator();
+			//BarcodeGenerator_PLU barcodeGenerator_PLU = new BarcodeGenerator_PLU();
 			
 			// Crea contextos gráficos temporales
 			Graphics g = Graphics.FromImage(new Bitmap(1, 1));
@@ -561,7 +559,7 @@ namespace WindowsFormsApplication1
 			string empty2 = string.Empty;
 			
 			// Genera código de barras temporal
-			Image image2 = barcodeGenerator.DrawCode128(g, "123456789", 0, 0);
+			Image image2 = null; //barcodeGenerator.DrawCode128(g, "123456789", 0, 0);
 			
 			// Obtiene valores de los controles
 			string text = this.cmb_titulo2.Text.Trim();
