@@ -1154,9 +1154,10 @@ font = new Font("arial", 17f, FontStyle.Bold);
 		private void chb_pesofijo_CheckedChanged(object sender, EventArgs e)
 		{
 
-this.LlenaEmbalaje();
-this.Llena_variedad_imprime();
-this.pb_etiqueta.Image = null;
+		// Al cambiar el modo peso fijo solo recargar los embalajes.
+		// No tocar `Llena_variedad_imprime()` aquí para evitar filtrar la lista de Variedad Imprime.
+		this.LlenaEmbalaje();
+		this.pb_etiqueta.Image = null;
 		}
 
 		// Token: 0x060000F4 RID: 244 RVA: 0x0000DFCE File Offset: 0x0000C1CE

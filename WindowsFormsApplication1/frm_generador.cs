@@ -9,6 +9,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Drawing.Printing;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using LabelKit_2022;
@@ -629,14 +630,15 @@ namespace WindowsFormsApplication1
             if (!variedadId.HasValue)
                 variedadId = db.GetVariedadIdByDato(this.cmb_variedad.Text);
 
-            List<DB.Item> variedadesImprime = db.GetVariedadesImprimePorVariedadYPesoFijo(variedadId, this.chb_pesofijo.Checked);
+            // Nota: VariedadImprime NO debe filtrarse por peso_fijo -> siempre solicitar sin filtro de peso
+            List<DB.Item> variedadesImprime = db.GetVariedadesImprimePorVariedadYPesoFijo(variedadId, /*pesoFijo*/ false);
 
             this.cmb_variedad_Imprime.DisplayMember = "Dato";
             this.cmb_variedad_Imprime.ValueMember = "Id";
             this.cmb_variedad_Imprime.DataSource = variedadesImprime;
             this.cmb_variedad_Imprime.SelectedIndex = variedadesImprime.Count > 0 ? 0 : -1;
 
-            System.Diagnostics.Debug.WriteLine($"[Llena_variedad_imprime] variedad_id: {variedadId}, peso_fijo: {this.chb_pesofijo.Checked}, items: {variedadesImprime.Count}");
+            System.Diagnostics.Debug.WriteLine($"[Llena_variedad_imprime] variedad_id: {variedadId}, peso_fijo: false (no filtrar), items: {variedadesImprime.Count}");
 
             // Al cambiar la variedad imprime, refrescamos GTIN
             this.Llena_GTIN();
@@ -1478,7 +1480,10 @@ string gs1 = "01" + gtin +
                     DrawText(gr, "(01)" + gtin + "(13)" + fechaYYMMDD + "(10)" + lot, 18, FontStyle.Bold, Color.Black, 320, 72, center: true);
 
                     // TITULOS: más gruesos y auto-ajuste de ancho
-                    string nombreVarImp = variedadImpDato.Length > 3 ? variedadImpDato.Substring(3) : variedadImpDato;
+                    // Evitar quitar los primeros 3 chars incondicionalmente (causa que falten palabras).
+                    // Si la variedad viene con un código numérico inicial (ej. "15 Sheegene 20 - Allison™")
+                    // eliminamos sólo ese prefijo numérico y separadores. En otros casos, conservamos el texto completo.
+                    string nombreVarImp = Regex.Replace(variedadImpDato ?? string.Empty, "^\\s*\\d+\\s*[-_.:]?\\s*", "");
                     nombreVarImp = nombreVarImp.Replace("_", " ");
 
                     DrawTextFitCentered(gr, especieColor, 320f, 90f, 600f, 34f, 24f, FontStyle.Bold, Color.Black, "Arial Black");
