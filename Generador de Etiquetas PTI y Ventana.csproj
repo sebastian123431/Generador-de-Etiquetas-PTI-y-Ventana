@@ -76,19 +76,35 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Net.Http" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data.SQLite">
-      <HintPath>System.Data.SQLite.dll</HintPath>
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Data.SQLite, Version=1.0.118.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.118.0\lib\net46\System.Data.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite.Linq, Version=1.0.118.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>packages\System.Data.SQLite.Linq.1.0.118.0\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite.EF6, Version=1.0.118.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>packages\System.Data.SQLite.EF6.1.0.118.0\lib\net46\System.Data.SQLite.EF6.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=8.0.33.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>packages\MySql.Data.8.0.33\lib\net48\MySql.Data.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="MySql.Data" Version="8.0.33" />
-  </ItemGroup>
-  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <Compile Include="Ean13Settings.cs" />
     <Compile Include="sf.cs" />
+    <Compile Include="LabelKit\BarcodeGenerator.cs" />
+    <Compile Include="LabelKit_2022\BarcodeGenerator.cs" />
+    <Compile Include="LabelKit_8045\BarcodeGenerator.cs" />
+    <Compile Include="LabelKit_PLU\BarcodeGenerator_PLU.cs" />
+    <Compile Include="LabelKit_PLU_2022\BarcodeGenerator_PLU.cs" />
+    <Compile Include="LabelKit_PLU_8045\BarcodeGenerator_PLU.cs" />
     <Compile Include="WindowsFormsApplication1\Data\DatabaseManager.cs" />
     <Compile Include="WindowsFormsApplication1\Data\HttpSyncClient.cs" />
+    <Compile Include="WindowsFormsApplication1\Data\JsonMini.cs" />
     <Compile Include="WindowsFormsApplication1\Data\WebSocketClient.cs" />
+    <Compile Include="WindowsFormsApplication1\Data\Item.cs" />
     <Compile Include="WindowsFormsApplication1\frm_Configuracion.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -166,6 +182,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.118.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.118.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

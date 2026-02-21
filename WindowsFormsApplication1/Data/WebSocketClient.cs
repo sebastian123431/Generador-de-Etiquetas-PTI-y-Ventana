@@ -3,13 +3,14 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
+using WindowsFormsApplication1.Data;
+using System.Collections.Generic;
 
 namespace WindowsFormsApplication1.Data
 {
 	/// <summary>
 	/// Cliente WebSocket para conectar con el servidor Django
-	/// Maneja la sincronización en tiempo real de datos
+	/// Maneja la sincronizacin en tiempo real de datos
 	/// </summary>
 	public class WebSocketClient
 	{
@@ -31,35 +32,11 @@ namespace WindowsFormsApplication1.Data
 			_isConnected = false;
 		}
 
-		private string ExtractString(JToken token, params string[] keys)
-		{
-			if (token == null || token.Type == JTokenType.Null)
-				return string.Empty;
-			if (token.Type == JTokenType.Object)
-			{
-				foreach (var k in keys)
-				{
-					var v = token[k];
-					if (v != null && v.Type != JTokenType.Null)
-					{
-						var s = v.Value<string>();
-						if (!string.IsNullOrEmpty(s)) return s;
-					}
-				}
-				// fallback to raw object string
-				return token.ToString();
-			}
-			// If it's a value type, just return its string representation
-			return token.Value<string>() ?? token.ToString();
-		}
+		
 
-		private bool ExtractBool(JToken token, string key)
-		{
-			if (token == null || token.Type == JTokenType.Null) return false;
-			var t = token[key];
-			if (t == null || t.Type == JTokenType.Null) return false;
-			try { return t.Value<bool>(); } catch { return false; }
-		}
+
+		
+
 
 		public static WebSocketClient Instance
 		{
@@ -138,7 +115,7 @@ namespace WindowsFormsApplication1.Data
 			}
 			catch (Exception ex)
 			{
-				ErrorOccurred?.Invoke(this, $"Error en recepción: {ex.Message}");
+				ErrorOccurred?.Invoke(this, $"Error en recepcin: {ex.Message}");
 				await HandleDisconnection();
 			}
 		}
@@ -147,29 +124,28 @@ namespace WindowsFormsApplication1.Data
 		{
 			try
 			{
-				JObject json = JObject.Parse(message);
-				string tipo = json["tipo"]?.ToString();
+				var root = JsonMini.AsDict(JsonMini.Parse(message));
+				string tipo = JsonMini.GetString(root, "tipo");
 
 				switch (tipo)
 				{
 					case "initial_data":
-						// Validar que el campo "data" exista y no sea nulo
-						if (json["data"] != null && json["data"].Type != JTokenType.Null)
+						if (root != null && root.ContainsKey("data") && root["data"] != null)
 						{
-							// await SyncInitialData(json["data"]);
+							// await SyncInitialData(root["data"]);
 						}
 						else
 						{
-							ErrorOccurred?.Invoke(this, "Error: No se recibió información de datos iniciales del servidor.");
+							ErrorOccurred?.Invoke(this, "Error: No se recibiÃ³ informaciÃ³n de datos iniciales del servidor.");
 						}
 						break;
 
 					case "catalogo_actualizado":
-						MessageReceived?.Invoke(this, "Catálogo actualizado");
+						MessageReceived?.Invoke(this, "CatÃ¡logo actualizado");
 						break;
 
 					case "data_update":
-						// await HandleDataUpdate(json);
+						// await HandleDataUpdate(root);
 						break;
 
 					default:
@@ -179,9 +155,11 @@ namespace WindowsFormsApplication1.Data
 			}
 			catch (Exception ex)
 			{
-				ErrorOccurred?.Invoke(this, $"Error procesando mensaje: {ex.Message}");
+				ErrorOccurred?.Invoke(this, $"Error al procesar mensaje: {ex.Message}");
 			}
 		}
+
+
 
 		private async Task HandleDisconnection()
 		{
@@ -196,7 +174,7 @@ namespace WindowsFormsApplication1.Data
 			}
 			else
 			{
-				ErrorOccurred?.Invoke(this, "Máximo de intentos de reconexión alcanzado");
+				ErrorOccurred?.Invoke(this, "Mximo de intentos de reconexin alcanzado");
 			}
 		}
 
@@ -207,7 +185,7 @@ namespace WindowsFormsApplication1.Data
 				if (_webSocket != null && _webSocket.State == WebSocketState.Open)
 				{
 					_cancellationTokenSource?.Cancel();
-					await _webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Desconexión manual", CancellationToken.None);
+					await _webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Desconexin manual", CancellationToken.None);
 				}
 
 				_isConnected = false;

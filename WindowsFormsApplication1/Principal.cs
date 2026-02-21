@@ -26,7 +26,6 @@ namespace WindowsFormsApplication1
         private Button btnConfiguracion;
         private Timer timerConexion;
         private Timer timerProgressBar;
-        private int progressValue = 0;
 
         /// <summary>
         /// Constructor del formulario principal

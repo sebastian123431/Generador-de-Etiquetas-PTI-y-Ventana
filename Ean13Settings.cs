@@ -8,12 +8,6 @@
 public class Ean13Settings
 {
 	/// <summary>
-	/// Altura del código de barras en píxeles
-	/// Valor por defecto: 120 píxeles
-	/// </summary>
-	private int BarCodeHeight = 120;
-
-	/// <summary>
 	/// Margen izquierdo del código de barras en píxeles
 	/// Valor por defecto: 10 píxeles
 	/// </summary>

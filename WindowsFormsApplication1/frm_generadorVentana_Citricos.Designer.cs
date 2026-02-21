@@ -237,10 +237,7 @@
             // 
             this.cbx_pallets.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbx_pallets.FormattingEnabled = true;
-            this.cbx_pallets.Items.AddRange(new object[] {
-            "65",
-            "70",
-            "72"});
+            // Items poblados en tiempo de ejecución desde la BD (CantidadCajasCitrico)
             this.cbx_pallets.Location = new System.Drawing.Point(516, 136);
             this.cbx_pallets.Margin = new System.Windows.Forms.Padding(4);
             this.cbx_pallets.Name = "cbx_pallets";
@@ -251,15 +248,7 @@
             // 
             this.cmb_Recibidor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmb_Recibidor.FormattingEnabled = true;
-            this.cmb_Recibidor.Items.AddRange(new object[] {
-            "",
-            "SUN PACIFIC",
-            "HALO",
-            "KOPKE",
-            "PACIFIC TRELLIS",
-            "PROCITRUS",
-            "SIERRA PRODUCE",
-            "WONDERFULL"});
+            // Items poblados en tiempo de ejecución desde la BD (RecibidorCitrico)
             this.cmb_Recibidor.Location = new System.Drawing.Point(516, 54);
             this.cmb_Recibidor.Margin = new System.Windows.Forms.Padding(4);
             this.cmb_Recibidor.Name = "cmb_Recibidor";
@@ -300,11 +289,7 @@
             // 
             this.cmb_productor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmb_productor.FormattingEnabled = true;
-            this.cmb_productor.Items.AddRange(new object[] {
-            "119072   El Tambito",
-            "106957   Huancara",
-            "166251   La Estancia",
-            "151976   El Guanaco"});
+            // Items poblados en tiempo de ejecución desde la BD (ProductorCitrico)
             this.cmb_productor.Location = new System.Drawing.Point(516, 95);
             this.cmb_productor.Margin = new System.Windows.Forms.Padding(4);
             this.cmb_productor.Name = "cmb_productor";
@@ -316,9 +301,7 @@
             // 
             this.cmb_cat1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmb_cat1.FormattingEnabled = true;
-            this.cmb_cat1.Items.AddRange(new object[] {
-            "Normal",
-            "Europa"});
+            // Items poblados en tiempo de ejecución si procede (o mantener por defecto)
             this.cmb_cat1.Location = new System.Drawing.Point(121, 251);
             this.cmb_cat1.Margin = new System.Windows.Forms.Padding(4);
             this.cmb_cat1.Name = "cmb_cat1";
@@ -396,9 +379,7 @@
             // 
             this.cmb_packing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmb_packing.FormattingEnabled = true;
-            this.cmb_packing.Items.AddRange(new object[] {
-            "RIO BLANCO COQUIMBO                               121224",
-            "COMPAÑIA FRIGORIFICA DEL NORTE SPA                155359"});
+            // Items poblados en tiempo de ejecución desde la BD (PackingCitrico)
             this.cmb_packing.Location = new System.Drawing.Point(116, 90);
             this.cmb_packing.Margin = new System.Windows.Forms.Padding(4);
             this.cmb_packing.Name = "cmb_packing";
@@ -486,9 +467,7 @@
             // 
             this.cmb_titulo2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmb_titulo2.FormattingEnabled = true;
-            this.cmb_titulo2.Items.AddRange(new object[] {
-            "15,0 kg",
-            "15,5 kg"});
+            // Items poblados en tiempo de ejecución si procede (Cantidad cajas/peso)
             this.cmb_titulo2.Location = new System.Drawing.Point(121, 210);
             this.cmb_titulo2.Margin = new System.Windows.Forms.Padding(4);
             this.cmb_titulo2.Name = "cmb_titulo2";

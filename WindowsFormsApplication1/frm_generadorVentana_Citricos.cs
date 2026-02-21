@@ -5,8 +5,10 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Drawing.Printing;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using WindowsFormsApplication1.Data; // Asegurar que el tipo Item esté disponible
 
 namespace WindowsFormsApplication1
 {
@@ -25,6 +27,25 @@ namespace WindowsFormsApplication1
 		{
 			this.InitializeComponent();
 		}
+
+		// Helper para obtener id seleccionado de un ComboBox (compatibilidad con otros formularios)
+		private int? TryGetSelectedId(ComboBox cmb)
+		{
+			try
+			{
+				if (cmb == null) return null;
+				if (cmb.SelectedValue is int id) return id;
+				if (cmb.SelectedValue != null && int.TryParse(cmb.SelectedValue.ToString(), out var idParsed)) return idParsed;
+				if (cmb.SelectedItem is WindowsFormsApplication1.Data.Item item) return item.Id;
+				return null;
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
+
 
 		/// <summary>
 		/// Evento de validación de tecla presionada en el campo GTIN
@@ -84,30 +105,38 @@ namespace WindowsFormsApplication1
 		/// <param name="e">Argumentos del evento</param>
 		private void Form1_Load(object sender, EventArgs e)
 		{
-			// Llena el combo de variedades de cítricos
+         // Llena los combos desde BD (tablas específicas para cítricos)
 			this.LlenaVariedad();
-			// Llena el combo de tipos de embalaje
+			this.LlenaPacking();
 			this.LlenaEmbalaje();
+			this.LlenaCalibres();
+			this.LlenaRecibidor();
+			this.LlenaProductor();
+			this.LlenaCantidadCajas();
 			// Limpia la imagen de vista previa
 			this.pb_etiqueta.Image = null;
 			// Establece valores predeterminados en los combos
-			this.cmb_titulo2.SelectedIndex = 0;
-			this.cmb_Recibidor.SelectedIndex = 0;
-			this.cmb_packing.SelectedIndex = 0;
-			this.cmb_calibre.SelectedIndex = 0;
-			this.cmb_cat1.SelectedIndex = 0;
-			this.cmb_productor.SelectedIndex = 0;
-			this.cbx_pallets.SelectedIndex = 1;
-		}
+         if (this.cmb_titulo2.Items.Count > 0) this.cmb_titulo2.SelectedIndex = 0;
+			if (this.cmb_Recibidor.Items.Count > 0) this.cmb_Recibidor.SelectedIndex = 0;
+			if (this.cmb_packing.Items.Count > 0) this.cmb_packing.SelectedIndex = 0;
+			if (this.cmb_calibre.Items.Count > 0) this.cmb_calibre.SelectedIndex = 0;
+			if (this.cmb_cat1.Items.Count > 0) this.cmb_cat1.SelectedIndex = 0;
+			if (this.cmb_productor.Items.Count > 0) this.cmb_productor.SelectedIndex = 0;
+            if (this.cbx_pallets.Items.Count > 1)
+                this.cbx_pallets.SelectedIndex = 1;
+            else if (this.cbx_pallets.Items.Count == 1)
+                this.cbx_pallets.SelectedIndex = 0;
+            // si no hay items no hacemos nada
+        }
 
-		/// <summary>
-		/// Evento clic del botón Copiar
-		/// Copia la imagen de la etiqueta al portapapeles rotándola 90 grados para orientación correcta
-		/// Después de copiar, restaura la rotación original de la imagen
-		/// </summary>
-		/// <param name="sender">Botón que disparó el evento</param>
-		/// <param name="e">Argumentos del evento</param>
-		private void btn_copiar_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Evento clic del botón Copiar
+        /// Copia la imagen de la etiqueta al portapapeles rotándola 90 grados para orientación correcta
+        /// Después de copiar, restaura la rotación original de la imagen
+        /// </summary>
+        /// <param name="sender">Botón que disparó el evento</param>
+        /// <param name="e">Argumentos del evento</param>
+        private void btn_copiar_Click(object sender, EventArgs e)
 		{
 			try
 			{
@@ -217,17 +246,52 @@ namespace WindowsFormsApplication1
 		/// </summary>
 		private void LlenaVariedad()
 		{
-			List<frm_generadorVentana_Citricos.Item> list = new List<frm_generadorVentana_Citricos.Item>();
-			// Agrega las diferentes variedades de cítricos con sus códigos
-			list.Add(new frm_generadorVentana_Citricos.Item("01 1 ORONULE", 1));
-			list.Add(new frm_generadorVentana_Citricos.Item("02 2 OROGRANDE", 1));
-			list.Add(new frm_generadorVentana_Citricos.Item("03 3 CLEMENULE", 1));
-			list.Add(new frm_generadorVentana_Citricos.Item("04 4 TANGO", 1));
-			// Configura el combo box con la lista de variedades
-			this.cmb_variedad.DisplayMember = "Name";
-			this.cmb_variedad.ValueMember = "Value";
-			this.cmb_variedad.DataSource = list;
+             try
+			{
+              var db = DatabaseManager.Instance;
+             var items = db.GetVariedadesCitricoItems();
+				this.cmb_variedad.DisplayMember = "Name";
+				this.cmb_variedad.ValueMember = "Value";
+				this.cmb_variedad.DataSource = items;
+			}
+			catch
+			{
+				// Fallback: dejar vacío el combo
+				this.cmb_variedad.DataSource = new List<WindowsFormsApplication1.Data.Item>();
+			}
 		}
+
+		// Al cambiar la selección de variedad, además de limpiar la vista, cargamos y mostramos el numero_interno
+		private void cmb_variedad_SelectionChangeCommitted(object sender, EventArgs e)
+		{
+			try
+			{
+				this.pb_etiqueta.Image = null;
+				// Intentamos obtener el id seleccionado (Item)
+				int? id = TryGetSelectedId(this.cmb_variedad);
+				string numero = string.Empty;
+				if (id.HasValue && id.Value > 0)
+				{
+					numero = WindowsFormsApplication1.Data.DatabaseManager.Instance.GetNumeroInternoVariedadCitricoById(id.Value);
+				}
+				else
+				{
+					// fallback por nombre
+					numero = WindowsFormsApplication1.Data.DatabaseManager.Instance.GetNumeroInternoVariedadCitricoByDato(this.cmb_variedad?.Text ?? string.Empty);
+				}
+          // Guardamos solo los dígitos del valor (evita letras como 'n') en la propiedad temporal
+			string sanitized = string.Empty;
+			if (!string.IsNullOrWhiteSpace(numero))
+			{
+				sanitized = new string(numero.Where(char.IsDigit).ToArray());
+			}
+			this._variedadNumeroInterno = string.IsNullOrWhiteSpace(sanitized) ? string.Empty : sanitized;
+			}
+			catch { this._variedadNumeroInterno = string.Empty; }
+		}
+
+		// Campo privado para almacenar el numero_interno de la variedad seleccionada
+		private string _variedadNumeroInterno = string.Empty;
 
 		/// <summary>
 		/// Llena el combo box de tipos de embalaje para cítricos
@@ -238,40 +302,19 @@ namespace WindowsFormsApplication1
 		/// </summary>
 		private void LlenaEmbalaje()
 		{
-			List<frm_generadorVentana_Citricos.Item> list = new List<frm_generadorVentana_Citricos.Item>();
-			if (!this.chb_pesofijo.Checked)
+            try
 			{
-				// Tipos de embalaje para peso variable
-				list.Add(new frm_generadorVentana_Citricos.Item("CG145A", 1));
-				list.Add(new frm_generadorVentana_Citricos.Item("CG150A", 1));
-				list.Add(new frm_generadorVentana_Citricos.Item("CG163A", 1));
-				list.Add(new frm_generadorVentana_Citricos.Item("CG150S", 1));
-				list.Add(new frm_generadorVentana_Citricos.Item("CG163S", 1));
-				list.Add(new frm_generadorVentana_Citricos.Item("CG145APM", 1));
-				list.Add(new frm_generadorVentana_Citricos.Item("CG150APM", 1));
-				list.Add(new frm_generadorVentana_Citricos.Item("CG163APM", 1));
-				list.Add(new frm_generadorVentana_Citricos.Item("CG150SPM", 1));
-				list.Add(new frm_generadorVentana_Citricos.Item("CG163SPM", 1));
+              var db = DatabaseManager.Instance;
+				var items = db.GetTiposEmbalajeCitricoItems();
+				this.cmb_tipo_embalaje.DisplayMember = "Name";
+				this.cmb_tipo_embalaje.ValueMember = "Value";
+				this.cmb_tipo_embalaje.DataSource = items;
+				if (items.Count > 0) this.cmb_tipo_embalaje.SelectedIndex = 0;
 			}
-			else
+			catch
 			{
-				// Tipos de embalaje para peso fijo (actualmente iguales)
-				list.Add(new frm_generadorVentana_Citricos.Item("CG145A", 1));
-				list.Add(new frm_generadorVentana_Citricos.Item("CG150A", 1));
-				list.Add(new frm_generadorVentana_Citricos.Item("CG163A", 1));
-				list.Add(new frm_generadorVentana_Citricos.Item("CG150S", 1));
-				list.Add(new frm_generadorVentana_Citricos.Item("CG163S", 1));
-				list.Add(new frm_generadorVentana_Citricos.Item("CG145APM", 1));
-				list.Add(new frm_generadorVentana_Citricos.Item("CG150APM", 1));
-				list.Add(new frm_generadorVentana_Citricos.Item("CG163APM", 1));
-				list.Add(new frm_generadorVentana_Citricos.Item("CG150SPM", 1));
-				list.Add(new frm_generadorVentana_Citricos.Item("CG163SPM", 1));
+				this.cmb_tipo_embalaje.DataSource = new List<WindowsFormsApplication1.Data.Item>();
 			}
-			// Configura el combo box con la lista de tipos de embalaje
-			this.cmb_tipo_embalaje.DisplayMember = "Name";
-			this.cmb_tipo_embalaje.ValueMember = "Value";
-			this.cmb_tipo_embalaje.DataSource = list;
-			this.cmb_tipo_embalaje.SelectedIndex = 0;
 		}
 
 		/// <summary>
@@ -299,8 +342,30 @@ namespace WindowsFormsApplication1
 		/// </summary>
 		private void cmb_variedad_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			this.LlenaCalibres();
+           this.LlenaCalibres();
 			this.pb_etiqueta.Image = null;
+			// Actualizar numero_interno de la variedad seleccionada para usar en el dibujo
+			try
+			{
+				int? id = TryGetSelectedId(this.cmb_variedad);
+				string numero = string.Empty;
+				if (id.HasValue && id.Value > 0)
+				{
+					numero = WindowsFormsApplication1.Data.DatabaseManager.Instance.GetNumeroInternoVariedadCitricoById(id.Value);
+				}
+				else
+				{
+					numero = WindowsFormsApplication1.Data.DatabaseManager.Instance.GetNumeroInternoVariedadCitricoByDato(this.cmb_variedad?.Text ?? string.Empty);
+				}
+            // Keep only digits to avoid unexpected letters showing in the label
+			string sanitized = string.Empty;
+			if (!string.IsNullOrWhiteSpace(numero))
+			{
+				sanitized = new string(numero.Where(char.IsDigit).ToArray());
+			}
+			this._variedadNumeroInterno = string.IsNullOrWhiteSpace(sanitized) ? string.Empty : sanitized;
+			}
+			catch { this._variedadNumeroInterno = string.Empty; }
 		}
 
 		/// <summary>
@@ -310,20 +375,18 @@ namespace WindowsFormsApplication1
 		/// </summary>
 		private void LlenaCalibres()
 		{
-			List<frm_generadorVentana_Citricos.Item> list = new List<frm_generadorVentana_Citricos.Item>();
-			// Agrega calibres con sus valores de orden
-			list.Add(new frm_generadorVentana_Citricos.Item("1", 8));
-			list.Add(new frm_generadorVentana_Citricos.Item("2", 1));
-			list.Add(new frm_generadorVentana_Citricos.Item("3", 2));
-			list.Add(new frm_generadorVentana_Citricos.Item("4", 3));
-			list.Add(new frm_generadorVentana_Citricos.Item("5", 4));
-			list.Add(new frm_generadorVentana_Citricos.Item("5A", 6));
-			list.Add(new frm_generadorVentana_Citricos.Item("1XX", 5));
-			list.Add(new frm_generadorVentana_Citricos.Item("1X", 7));
-			// Configura el combo box con la lista de calibres
-			this.cmb_calibre.DisplayMember = "Name";
-			this.cmb_calibre.ValueMember = "Value";
-			this.cmb_calibre.DataSource = list;
+         try
+			{
+              var db = DatabaseManager.Instance;
+				var items = db.GetCalibresItems();
+				this.cmb_calibre.DisplayMember = "Dato";
+				this.cmb_calibre.ValueMember = "Id";
+				this.cmb_calibre.DataSource = items;
+			}
+			catch
+			{
+				this.cmb_calibre.DataSource = new List<WindowsFormsApplication1.Data.Item>();
+			}
 		}
 
 		/// <summary>
@@ -422,6 +485,71 @@ namespace WindowsFormsApplication1
 		private void cmb_packing_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			this.pb_etiqueta.Image = null;
+		}
+
+		private void LlenaPacking()
+		{
+			try
+			{
+				var db = DatabaseManager.Instance;
+				var items = db.GetPackingsCitrico().Select((s, i) => new WindowsFormsApplication1.Data.Item(s, i + 1)).ToList();
+				this.cmb_packing.DisplayMember = "Name";
+				this.cmb_packing.ValueMember = "Value";
+				this.cmb_packing.DataSource = items;
+			}
+			catch
+			{
+				this.cmb_packing.DataSource = new List<WindowsFormsApplication1.Data.Item>();
+			}
+		}
+
+		private void LlenaRecibidor()
+		{
+			try
+			{
+				var db = DatabaseManager.Instance;
+				var items = db.GetRecibidoresCitrico().Select((s, i) => new WindowsFormsApplication1.Data.Item(s, i + 1)).ToList();
+				this.cmb_Recibidor.DisplayMember = "Name";
+				this.cmb_Recibidor.ValueMember = "Value";
+				this.cmb_Recibidor.DataSource = items;
+			}
+			catch
+			{
+				this.cmb_Recibidor.DataSource = new List<WindowsFormsApplication1.Data.Item>();
+			}
+		}
+
+		private void LlenaProductor()
+		{
+			try
+			{
+				var db = DatabaseManager.Instance;
+				var items = db.GetProductoresCitrico().Select((s, i) => new WindowsFormsApplication1.Data.Item(s, i + 1)).ToList();
+				this.cmb_productor.DisplayMember = "Name";
+				this.cmb_productor.ValueMember = "Value";
+				this.cmb_productor.DataSource = items;
+			}
+			catch
+			{
+				this.cmb_productor.DataSource = new List<WindowsFormsApplication1.Data.Item>();
+			}
+		}
+
+		private void LlenaCantidadCajas()
+		{
+			try
+			{
+				var db = DatabaseManager.Instance;
+               var items = db.GetCantidadCajasCitrico().Select((s, i) => new WindowsFormsApplication1.Data.Item(s, i + 1)).ToList();
+				// Usar el combo de pallets (cbx_pallets) en el diseñador para cantidad de cajas
+				this.cbx_pallets.DisplayMember = "Name";
+				this.cbx_pallets.ValueMember = "Value";
+				this.cbx_pallets.DataSource = items;
+			}
+			catch
+			{
+               this.cbx_pallets.DataSource = new List<WindowsFormsApplication1.Data.Item>();
+			}
 		}
 
 		/// <summary>
@@ -538,7 +666,7 @@ namespace WindowsFormsApplication1
 		/// - Nombre del recibidor (ajusta tamaño de fuente automáticamente)
 		/// - Códigos CSG (productor) y CSP (packing)
 		/// - Ubicación (ELQUI, COQUIMBO)
-		/// - Fecha, lote y tipo de embalaje
+		/// - Fecha, lote y tipo de emballaje
 		/// Guarda la imagen como "etiqueta.jpg" y la muestra en el PictureBox
 		/// </summary>
 		private void DibujaEtiquetaCOMPLETA()
@@ -555,7 +683,6 @@ namespace WindowsFormsApplication1
 			graphics = Graphics.FromImage(image);
 			
 			string empty = string.Empty;
-			SizeF sizeF = default(SizeF);
 			string empty2 = string.Empty;
 			
 			// Genera código de barras temporal
@@ -668,7 +795,23 @@ namespace WindowsFormsApplication1
 			StringFormat stringFormat5 = new StringFormat();
 			stringFormat5.Alignment = StringAlignment.Center;
 			SolidBrush brush5 = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
-			graphics2.DrawString(this.cmb_variedad.Text.Trim().Substring(3, 1).ToString(), font, brush5, new Point(1280, 100), stringFormat5);
+        // Se omite mostrar un caracter tomado de la cadena de variedad (previene letra 'n' inesperada)
+		// El identificador interno (numero_interno) se muestra más abajo si existe.
+
+		// Dibuja numero_interno de la variedad en la esquina superior derecha (si existe)
+		try
+		{
+			if (!string.IsNullOrWhiteSpace(this._variedadNumeroInterno))
+			{
+				Font fontN = new Font("arial", 160f, FontStyle.Bold);
+				StringFormat sfN = new StringFormat();
+				sfN.Alignment = StringAlignment.Center;
+				SolidBrush brushN = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
+				// Posición aproximada en la esquina superior derecha
+				graphics2.DrawString(this._variedadNumeroInterno, fontN, brushN, new Point(1400, 120), sfN);
+			}
+		}
+		catch { }
 			string text3 = this.cmb_Recibidor.Text.Trim().ToString();
 			string[] array2;
 			if (this.cmb_Recibidor.Text.Trim() == "10 T Seedless" || this.cmb_Recibidor.Text.Trim() == "16 Iniagrape-one cv.")
@@ -811,26 +954,78 @@ namespace WindowsFormsApplication1
 				{
 				}
 			}
-			font = new Font("arial", 22f, FontStyle.Bold);
+            font = new Font("arial", 22f, FontStyle.Bold);
 			StringFormat stringFormat9 = new StringFormat();
 			stringFormat9.Alignment = StringAlignment.Center;
 			SolidBrush brush9 = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
-			graphics2.DrawString("CSG " + this.cmb_productor.Text.Trim().Substring(0, 6).ToString(), font, brush9, new Point(832, 260), stringFormat9);
-			if (this.cmb_packing.Text.Trim().ToString() == "146 P. Los Pimientos Terreno                      3101432")
+			// Obtener CSG desde la tabla ProductorCitrico usando el texto del productor.
+			string productorTexto = this.cmb_productor?.Text?.Trim() ?? string.Empty;
+			string csgValue = string.Empty;
+			try
 			{
-				font = new Font("arial", 22f, FontStyle.Bold);
-				StringFormat stringFormat10 = new StringFormat();
-				stringFormat10.Alignment = StringAlignment.Center;
-				SolidBrush brush10 = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
-				graphics2.DrawString("CSP " + this.cmb_packing.Text.Trim().Substring(50, 7).ToString(), font, brush10, new Point(832, 310), stringFormat10);
+				if (!string.IsNullOrWhiteSpace(productorTexto))
+					csgValue = WindowsFormsApplication1.Data.DatabaseManager.Instance.GetCsgForProductor(productorTexto);
+			}
+			catch { }
+			if (!string.IsNullOrWhiteSpace(csgValue))
+			{
+				graphics2.DrawString("CSG " + csgValue, font, brush9, new Point(832, 260), stringFormat9);
 			}
 			else
 			{
-				font = new Font("arial", 22f, FontStyle.Bold);
-				StringFormat stringFormat10 = new StringFormat();
-				stringFormat10.Alignment = StringAlignment.Center;
-				SolidBrush brush10 = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
-				graphics2.DrawString("CSP " + this.cmb_packing.Text.Trim().Substring(50, 6).ToString(), font, brush10, new Point(832, 310), stringFormat10);
+				// Fallback: si no existe CSG en la tabla, usamos los primeros 6 caracteres del texto del productor (compatibilidad legacy)
+				string fallback = productorTexto.Length >= 6 ? productorTexto.Substring(0, 6) : productorTexto;
+				graphics2.DrawString("CSG " + fallback, font, brush9, new Point(832, 260), stringFormat9);
+			}
+         // Intentamos obtener CSP desde la base de datos usando el id seleccionado
+			string packingCsp = string.Empty;
+         try
+			{
+				int? packingId = null;
+				// SelectedItem may be an Item
+				if (this.cmb_packing?.SelectedItem is WindowsFormsApplication1.Data.Item it)
+					packingId = it.Id;
+				// Try SelectedValue
+				if (!packingId.HasValue && this.cmb_packing?.SelectedValue != null)
+				{
+					if (int.TryParse(this.cmb_packing.SelectedValue.ToString(), out var v)) packingId = v;
+				}
+				// Fallback: parse text tokens
+				if (!packingId.HasValue)
+				{
+					var txt = this.cmb_packing?.Text?.Trim();
+					if (!string.IsNullOrWhiteSpace(txt))
+					{
+						var parts = txt.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+						int idVal;
+						if (parts.Length > 0 && int.TryParse(parts[0], out idVal)) packingId = idVal;
+						else if (parts.Length > 0 && int.TryParse(parts[parts.Length - 1], out idVal)) packingId = idVal;
+					}
+				}
+				if (packingId.HasValue)
+				{
+					var cspVal = WindowsFormsApplication1.Data.DatabaseManager.Instance.GetCspByPackingId(packingId.Value);
+					if (cspVal.HasValue)
+						packingCsp = cspVal.Value.ToString();
+				}
+			}
+			catch { }
+
+			font = new Font("arial", 22f, FontStyle.Bold);
+			StringFormat stringFormat10 = new StringFormat();
+			stringFormat10.Alignment = StringAlignment.Center;
+			SolidBrush brush10 = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
+			if (!string.IsNullOrWhiteSpace(packingCsp))
+			{
+				graphics2.DrawString("CSP " + packingCsp, font, brush10, new Point(832, 310), stringFormat10);
+			}
+			else
+			{
+				// Fallback: compatibilidad con formatos legacy en el texto del combo
+				if (this.cmb_packing.Text.Trim().ToString() == "146 P. Los Pimientos Terreno                      3101432")
+					graphics2.DrawString("CSP " + this.cmb_packing.Text.Trim().Substring(50, 7).ToString(), font, brush10, new Point(832, 310), stringFormat10);
+				else
+					graphics2.DrawString("CSP " + this.cmb_packing.Text.Trim().Substring(50, 6).ToString(), font, brush10, new Point(832, 310), stringFormat10);
 			}
 			font = new Font("arial", 17f, FontStyle.Bold);
 			StringFormat stringFormat11 = new StringFormat();
@@ -1014,43 +1209,7 @@ namespace WindowsFormsApplication1
 			private static ushort[] table = new ushort[256];
 		}
 
-		/// <summary>
-		/// Clase auxiliar para almacenar items de ComboBox
-		/// Representa un par nombre-valor para usar en listas desplegables
-		/// </summary>
-		public class Item
-		{
-			/// <summary>
-			/// Nombre visible del item en el ComboBox
-			/// </summary>
-			public string Name { get; set; }
-
-			/// <summary>
-			/// Valor asociado al item (para procesamiento interno)
-			/// </summary>
-			public int Value { get; set; }
-
-			/// <summary>
-			/// Constructor para crear un nuevo item
-			/// </summary>
-			/// <param name="name">Nombre del item</param>
-			/// <param name="value">Valor asociado</param>
-			public Item(string name, int value)
-			{
-				this.Name = name;
-				this.Value = value;
-			}
-
-			/// <summary>
-			/// Retorna la representación en texto del item (su nombre)
-			/// Usado por el ComboBox para mostrar el item
-			/// </summary>
-			/// <returns>Nombre del item</returns>
-			public override string ToString()
-			{
-				return this.Name;
-			}
-		}
+        // Use WindowsFormsApplication1.Data.Item (shared type) for combo items
 
 		/// <summary>
 		/// Evento clic en label16 (sin implementación)

@@ -6,8 +6,13 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Drawing.Printing;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using LabelKit_8045;
+using LabelKit_PLU_8045;
+using WindowsFormsApplication1.Data;
+using Item = WindowsFormsApplication1.Data.Item;
 
 namespace WindowsFormsApplication1
 {
@@ -26,6 +31,72 @@ namespace WindowsFormsApplication1
 		{
 			this.InitializeComponent();
 		}
+
+// Extrae el nombre del packing, eliminando prefijos numéricos e identificadores CSP al final.
+private static string ExtractPackingName(string s)
+{
+	if (string.IsNullOrWhiteSpace(s)) return "";
+	var t = s.Trim();
+	// si el texto contiene la marca "CSP:" o un token numérico al final, los eliminamos
+	// quitar sufijo CSP si existe
+	int idx = t.IndexOf("CSP:", StringComparison.OrdinalIgnoreCase);
+	if (idx >= 0)
+	{
+		t = t.Substring(0, idx).Trim();
+	}
+
+	// quitar tokens numéricos al inicio (IDs)
+	var parts = t.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+	int skip = 0;
+	for (int i = 0; i < parts.Count; i++)
+	{
+		if (parts[i].All(c => char.IsDigit(c))) { skip++; continue; }
+		// tokens muy cortos que no parecen nombre (ej: "001") -> skip
+		if (parts[i].Length <= 3 && parts[i].All(c => char.IsDigit(c) || c == '0')) { skip++; continue; }
+		break;
+	}
+
+	if (skip >= parts.Count) return string.Join(" ", parts);
+	return string.Join(" ", parts.Skip(skip));
+}
+
+// Overload that accepts strongly-typed list returned by DatabaseManager
+private static void BindComboItems(ComboBox cmb, List<WindowsFormsApplication1.Data.Item> items)
+{
+	// Forward to the IEnumerable implementation
+	BindComboItems(cmb, (System.Collections.IEnumerable)items);
+}
+
+// New unambiguous helper that accepts an enumerable of objects
+private static void PopulateCombo(ComboBox cmb, IEnumerable<object> items)
+{
+	if (cmb == null) return;
+	try
+	{
+		cmb.DataSource = null;
+		cmb.DisplayMember = "Dato";
+		cmb.ValueMember = "Id";
+		cmb.DataSource = items?.ToList() ?? new List<object>();
+	}
+	catch
+	{
+		try
+		{
+			cmb.Items.Clear();
+			if (items != null)
+			{
+				foreach (var it in items)
+					cmb.Items.Add(it);
+			}
+		}
+		catch { }
+	}
+}
+
+private static void PopulateCombo(ComboBox cmb, List<WindowsFormsApplication1.Data.Item> items)
+{
+	PopulateCombo(cmb, items?.Cast<object>().ToList());
+}
 
 		/// <summary>
 		/// Convierte una fecha agrícola al formato PTI para etiquetas de ventana
@@ -117,62 +188,118 @@ namespace WindowsFormsApplication1
 		// Token: 0x060000D6 RID: 214 RVA: 0x0000AB10 File Offset: 0x00008D10
 		private void Form1_Load(object sender, EventArgs e)
 		{
-			this.LeerXML();
-			this.LeerXML2();
-			this.LlenaEmbalaje();
-			this.Llena_Productor();
-			this.Llena_Recibidor();
-			this.pb_etiqueta.Image = null;
-			this.cmb_titulo2.SelectedIndex = 0;
-			this.cmb_Recibidor.SelectedIndex = 0;
-			this.cmb_packing.SelectedIndex = 0;
-			this.cmb_cat1.SelectedIndex = 0;
-			this.cmb_productor.SelectedIndex = 0;
-			this.cbx_pallets.SelectedIndex = 1;
+
+// ==========================
+// XML (LEGACY) - DEJAR COMENTADO
+// ==========================
+// this.LeerXML();
+// this.LeerXML2();
+
+// ==========================
+// DESDE BD (NUEVO)
+// ==========================
+this.LlenaEmbalaje();
+this.Llena_Productor();
+this.Llena_Recibidor();
+this.Llena_Packing();
+this.Llena_Peso();
+this.Llena_Calibre();
+this.Llena_CategoriaSAG();
+
+// Cargar variedades / lotes / etc.
+SafeSelectFirst(this.cmb_productor);
+this.LlenaVariedad();
+SafeSelectFirst(this.cmb_variedad);
+this.Llena_lotes();
+SafeSelectFirst(this.cmb_lote);
+this.Llena_variedad_imprime();
+SafeSelectFirst(this.cmb_variedad_Imprime);
+this.Llena_SDP();
+
+this.pb_etiqueta.Image = null;
+
+// Selecciones iniciales (solo si hay datos)
+SafeSelectFirst(this.cmb_titulo2);
+SafeSelectFirst(this.cmb_Recibidor);
+SafeSelectFirst(this.cmb_packing);
+SafeSelectFirst(this.cmb_cat1);
+
+if (this.cbx_pallets.Items.Count > 1) this.cbx_pallets.SelectedIndex = 1;
+else if (this.cbx_pallets.Items.Count > 0) this.cbx_pallets.SelectedIndex = 0;
 		}
 
 		// Token: 0x060000D7 RID: 215 RVA: 0x0000ABB0 File Offset: 0x00008DB0
 		private void Llena_Recibidor()
 		{
-			try
-			{
-				this.Tabla_Recibidor.ReadXml("Recibidor.xml");
-				EnumerableRowCollection<DataRow> source = from contact in this.Tabla_Recibidor.AsEnumerable()
-				select contact;
-				DataView dataView = source.AsDataView<DataRow>();
-				dataView.Sort = "Recibidor asc";
-				this.cmb_Recibidor.DataSource = dataView.ToTable(true, new string[]
-				{
-					"Recibidor"
-				});
-				this.cmb_Recibidor.DisplayMember = "Recibidor";
-			}
-			catch (Exception)
-			{
-				throw;
-			}
+
+try
+{
+    // ==========================
+    // XML (LEGACY) - DEJAR COMENTADO
+    // ==========================
+    /*
+    this.Tabla_Recibidor.ReadXml("Recibidor.xml");
+    EnumerableRowCollection<DataRow> source = from contact in this.Tabla_Recibidor.AsEnumerable()
+        select contact;
+    DataView dataView = source.AsDataView<DataRow>();
+    dataView.Sort = "Recibidor asc";
+    this.cmb_Recibidor.DataSource = dataView.ToTable(true, new string[] { "Recibidor" });
+    this.cmb_Recibidor.DisplayMember = "Recibidor";
+    */
+
+    // ==========================
+    // DESDE BD (NUEVO)
+    // ==========================
+    var db = DatabaseManager.Instance;
+	PopulateCombo(this.cmb_Recibidor, db.GetRecibidoresItems().Cast<object>().ToList());
+}
+catch (Exception)
+{
+    throw;
+}
 		}
 
 		// Token: 0x060000D8 RID: 216 RVA: 0x0000AC74 File Offset: 0x00008E74
 		private void Llena_Productor()
 		{
-			try
-			{
-				this.Tabla_Productores.ReadXml("Catrastro.xml");
-				EnumerableRowCollection<DataRow> source = from contact in this.Tabla_Productores.AsEnumerable()
-				select contact;
-				DataView dataView = source.AsDataView<DataRow>();
-				dataView.Sort = "Productor DESC";
-				this.cmb_productor.DataSource = dataView.ToTable(true, new string[]
-				{
-					"Productor"
-				});
-				this.cmb_productor.DisplayMember = "Productor";
-			}
-			catch (Exception)
-			{
-				throw;
-			}
+
+try
+{
+    // ==========================
+    // XML (LEGACY) - DEJAR COMENTADO
+    // ==========================
+    /*
+    this.Tabla_Productores.ReadXml("Catrastro.xml");
+    EnumerableRowCollection<DataRow> source = from contact in this.Tabla_Productores.AsEnumerable()
+        select contact;
+    DataView dataView = source.AsDataView<DataRow>();
+    dataView.Sort = "Productor DESC";
+    this.cmb_productor.DataSource = dataView.ToTable(true, new string[] { "Productor" });
+    this.cmb_productor.DisplayMember = "Productor";
+    */
+
+    // ==========================
+    // DESDE BD (NUEVO)
+    // ==========================
+    var db = DatabaseManager.Instance;
+
+	// Mostrar sólo el nombre del productor (sin prefijos numéricos como CSG/ID)
+	var originales = db.GetProductoresItems();
+	var formateados = new List<WindowsFormsApplication1.Data.Item>();
+	foreach (var it in originales)
+	{
+		string raw = it.Dato ?? "";
+		string name = ExtractProductorName(raw);
+		if (string.IsNullOrWhiteSpace(name)) name = raw.Trim();
+		formateados.Add(new WindowsFormsApplication1.Data.Item(name, it.Id));
+	}
+
+	PopulateCombo(this.cmb_productor, formateados.Cast<object>().ToList());
+}
+catch (Exception)
+{
+    throw;
+}
 		}
 
 		// Token: 0x060000D9 RID: 217 RVA: 0x0000AD24 File Offset: 0x00008F24
@@ -276,58 +403,53 @@ namespace WindowsFormsApplication1
 		// Token: 0x060000DF RID: 223 RVA: 0x0000AFC4 File Offset: 0x000091C4
 		private void LlenaEmbalaje()
 		{
-			List<frm_generadorVentana.Item> list = new List<frm_generadorVentana.Item>();
-			if (!this.chb_pesofijo.Checked)
-			{
-				list.Add(new frm_generadorVentana.Item("BP", 1));
-				list.Add(new frm_generadorVentana.Item("BSUAC", 1));
-				list.Add(new frm_generadorVentana.Item("BSUBI", 1));
-				list.Add(new frm_generadorVentana.Item("BSUCH", 1));
-				list.Add(new frm_generadorVentana.Item("BSUDR", 1));
-				list.Add(new frm_generadorVentana.Item("BSUG2", 1));
-				list.Add(new frm_generadorVentana.Item("BSUGF", 1));
-				list.Add(new frm_generadorVentana.Item("BSU01", 1));
-				list.Add(new frm_generadorVentana.Item("BSU02", 1));
-				list.Add(new frm_generadorVentana.Item("BSUPF", 1));
-				list.Add(new frm_generadorVentana.Item("BSURD", 1));
-				list.Add(new frm_generadorVentana.Item("BSUSC", 1));
-				list.Add(new frm_generadorVentana.Item("BSUSF", 1));
-				list.Add(new frm_generadorVentana.Item("BSUSG", 1));
-				list.Add(new frm_generadorVentana.Item("BSUSS", 1));
-				list.Add(new frm_generadorVentana.Item("BSUSW", 1));
-				list.Add(new frm_generadorVentana.Item("BZUAC", 1));
-				list.Add(new frm_generadorVentana.Item("BZUALDI", 1));
-				list.Add(new frm_generadorVentana.Item("BZUG1", 1));
-				list.Add(new frm_generadorVentana.Item("BZUG2", 1));
-				list.Add(new frm_generadorVentana.Item("BZUHB", 1));
-				list.Add(new frm_generadorVentana.Item("BZUNF", 1));
-				list.Add(new frm_generadorVentana.Item("BZU01", 1));
-				list.Add(new frm_generadorVentana.Item("BZU01KR", 1));
-				list.Add(new frm_generadorVentana.Item("BZUTI", 1));
-				list.Add(new frm_generadorVentana.Item("PPS", 1));
-				list.Add(new frm_generadorVentana.Item("PPZ", 1));
-				list.Add(new frm_generadorVentana.Item("SL", 1));
-			}
-			else
-			{
-				list.Add(new frm_generadorVentana.Item("CL15", 1));
-				list.Add(new frm_generadorVentana.Item("CL27", 1));
-				list.Add(new frm_generadorVentana.Item("CL29", 1));
-				list.Add(new frm_generadorVentana.Item("CL38BI", 1));
-				list.Add(new frm_generadorVentana.Item("CL38BIW", 1));
-				list.Add(new frm_generadorVentana.Item("CL38C", 1));
-				list.Add(new frm_generadorVentana.Item("CL38D", 1));
-				list.Add(new frm_generadorVentana.Item("CL38GF", 1));
-				list.Add(new frm_generadorVentana.Item("CL38KR", 1));
-				list.Add(new frm_generadorVentana.Item("CL38S", 1));
-				list.Add(new frm_generadorVentana.Item("CL38W", 1));
-				list.Add(new frm_generadorVentana.Item("CL38WE", 1));
-				list.Add(new frm_generadorVentana.Item("PG15", 1));
-			}
-			this.cmb_tipo_embalaje.DisplayMember = "Name";
-			this.cmb_tipo_embalaje.ValueMember = "Value";
-			this.cmb_tipo_embalaje.DataSource = list;
-			this.cmb_tipo_embalaje.SelectedIndex = 0;
+
+try
+{
+    // ==========================
+    // DATOS HARDCODEADOS (LEGACY) - DEJAR COMENTADO
+    // ==========================
+    /*
+    List<Item> list = new List<Item>();
+    if (!this.chb_pesofijo.Checked)
+    {
+        list.Add(new Item("BP", 1));
+        list.Add(new Item("BSUAC", 1));
+        list.Add(new Item("BUSAL", 1));
+        list.Add(new Item("CLAM", 1));
+        list.Add(new Item("Clam", 1));
+        list.Add(new Item("TORE", 1));
+        list.Add(new Item("TORE COV", 1));
+        list.Add(new Item("TORE COV BT", 1));
+        list.Add(new Item("TORE COV LD", 1));
+    }
+    else
+    {
+        list.Add(new Item("BUSAL", 1));
+        list.Add(new Item("BUSAL LD", 1));
+        list.Add(new Item("CLAM", 1));
+        list.Add(new Item("Clam", 1));
+        list.Add(new Item("GCBUSS", 1));
+        list.Add(new Item("GCBUSS LD", 1));
+        list.Add(new Item("TORE COV BT", 1));
+        list.Add(new Item("TORE COV LD", 1));
+    }
+    this.cmb_tipo_embalaje.DisplayMember = "Name";
+    this.cmb_tipo_embalaje.ValueMember = "Value";
+    this.cmb_tipo_embalaje.DataSource = list;
+    */
+
+    // ==========================
+    // DESDE BD (NUEVO)
+    // ==========================
+    var db = DatabaseManager.Instance;
+	bool pesoFijo = this.chb_pesofijo.Checked;
+	PopulateCombo(this.cmb_tipo_embalaje, db.GetTipoEmbalajePorPesoFijo(pesoFijo).Cast<object>().ToList());
+}
+catch (Exception)
+{
+    // mantener comportamiento antiguo: no cortar el flujo si falla la carga
+}
 		}
 
 		// Token: 0x060000E0 RID: 224 RVA: 0x0000B311 File Offset: 0x00009511
@@ -353,234 +475,115 @@ namespace WindowsFormsApplication1
 		// Token: 0x060000E3 RID: 227 RVA: 0x0000B350 File Offset: 0x00009550
 		private void Llena_variedad_imprime()
 		{
-			List<frm_generadorVentana.Item> list = new List<frm_generadorVentana.Item>();
-			try
-			{
-				if (this.cmb_variedad.Text.ToString() == "ALLISON")
-				{
-					list.Add(new frm_generadorVentana.Item("15 Sheegene 20 -_Allison™", 1));
-					list.Add(new frm_generadorVentana.Item("15 Sheegene 20", 1));
-					list.Add(new frm_generadorVentana.Item("00 Red Seedless_'Unknown Variety'", 1));
-				}
-				if (this.cmb_variedad.Text.ToString() == "ARRA 15")
-				{
-					list.Add(new frm_generadorVentana.Item("11 Arrafifteen -_Arra15", 1));
-					list.Add(new frm_generadorVentana.Item("00 Green Seedless_'Unknown Variety'", 1));
-				}
-				if (this.cmb_variedad.Text.ToString() == "ARRA 29")
-				{
-					list.Add(new frm_generadorVentana.Item("27 Arratwentynine -_Arra29", 1));
-					list.Add(new frm_generadorVentana.Item("00 Red Seedless_'Unknown Variety'", 1));
-				}
-				if (this.cmb_variedad.Text.ToString() == "ARRA 35")
-				{
-					list.Add(new frm_generadorVentana.Item("51 Arrathirtyfive -_Arra35", 1));
-					list.Add(new frm_generadorVentana.Item("00 Red Seedless_'Unknown Variety'", 1));
-				}
-				if (this.cmb_variedad.Text.ToString() == "AUTUMN CRISP")
-				{
-					list.Add(new frm_generadorVentana.Item("38 Sugrathirtyfive -_Autumn Crisp®", 1));
-					list.Add(new frm_generadorVentana.Item("38 Sugrathirtyfive", 1));
-					list.Add(new frm_generadorVentana.Item("00 Green Seedless_'Unknown Variety'", 1));
-				}
-				if (this.cmb_variedad.Text.ToString() == "AUTUMN ROYAL")
-				{
-					list.Add(new frm_generadorVentana.Item("09 Autumn Royal", 1));
-					list.Add(new frm_generadorVentana.Item("00 Black Seedless_'Unknown Variety'", 1));
-				}
-				if (this.cmb_variedad.Text.ToString() == "CANDY HEARTS")
-				{
-					list.Add(new frm_generadorVentana.Item("35 IFG Nineteen -_Candy Hearts™", 1));
-					list.Add(new frm_generadorVentana.Item("00 Red Seedless_'Unknown Variety'", 1));
-				}
-				if (this.cmb_variedad.Text.ToString() == "FLAME SEEDLESS")
-				{
-					list.Add(new frm_generadorVentana.Item("03 Flame Seedless", 1));
-					list.Add(new frm_generadorVentana.Item("00 Red Seedless_'Unknown Variety'", 1));
-				}
-				if (this.cmb_variedad.Text.ToString() == "GREAT GREEN")
-				{
-					list.Add(new frm_generadorVentana.Item("30 Sheegene 17 -_Great Green™", 1));
-					list.Add(new frm_generadorVentana.Item("30 Sheegene 17", 1));
-					list.Add(new frm_generadorVentana.Item("00 Green Seedless_'Unknown Variety'", 1));
-				}
-				if (this.cmb_variedad.Text.ToString() == "INIAGRAPE-ONE (MAYLEN)")
-				{
-					list.Add(new frm_generadorVentana.Item("91 Maylen®_(Iniagrape-one cv.)", 1));
-					list.Add(new frm_generadorVentana.Item("16 Iniagrape-one cv.", 1));
-					list.Add(new frm_generadorVentana.Item("00 Black Seedless_'Unknown Variety'", 1));
-				}
-				if (this.cmb_variedad.Text.ToString() == "IVORY")
-				{
-					list.Add(new frm_generadorVentana.Item("34 Sheegene 21 -_Ivory™", 1));
-					list.Add(new frm_generadorVentana.Item("34 Sheegene 21", 1));
-					list.Add(new frm_generadorVentana.Item("00 Green Seedless_'Unknown Variety'", 1));
-				}
-				if (this.cmb_variedad.Text.ToString() == "KRISSY")
-				{
-					list.Add(new frm_generadorVentana.Item("21 Sheegene 12 -_Krissy™", 1));
-					list.Add(new frm_generadorVentana.Item("21 Sheegene 12", 1));
-					list.Add(new frm_generadorVentana.Item("00 Red Seedless_'Unknown Variety'", 1));
-				}
-				if (this.cmb_variedad.Text.ToString() == "MELODY")
-				{
-					list.Add(new frm_generadorVentana.Item("22 Blagratwo -_Melody™", 1));
-					list.Add(new frm_generadorVentana.Item("22 Blagratwo", 1));
-					list.Add(new frm_generadorVentana.Item("00 Black Seedless_'Unknown Variety'", 1));
-				}
-				if (this.cmb_variedad.Text.ToString() == "PRIME SEEDLESS")
-				{
-					list.Add(new frm_generadorVentana.Item("08 Prime Seedless", 1));
-					list.Add(new frm_generadorVentana.Item("00 Green Seedless_'Unknown Variety'", 1));
-				}
-				if (this.cmb_variedad.Text.ToString() == "RED GLOBE")
-				{
-					list.Add(new frm_generadorVentana.Item("04 Red Globe", 1));
-				}
-				if (this.cmb_variedad.Text.ToString() == "SUGRA 53")
-				{
-					list.Add(new frm_generadorVentana.Item("00 Sugra53", 1));
-					list.Add(new frm_generadorVentana.Item("00 Red Seedless_'Unknown Variety'", 1));
-				}
-				if (this.cmb_variedad.Text.ToString() == "SUGRAONE")
-				{
-					list.Add(new frm_generadorVentana.Item("05 Sugraone", 1));
-					list.Add(new frm_generadorVentana.Item("00 Green Seedless_'Unknown Variety'", 1));
-				}
-				if (this.cmb_variedad.Text.ToString() == "SWEET CELEBRATION")
-				{
-					list.Add(new frm_generadorVentana.Item("32 IFG Three -_Sweet Celebration™", 1));
-					list.Add(new frm_generadorVentana.Item("00 Red Seedless_'Unknown Variety'", 1));
-				}
-				if (this.cmb_variedad.Text.ToString() == "SWEET FAVORS")
-				{
-					list.Add(new frm_generadorVentana.Item("31 IFG Sixteen -_Sweet Favors™", 1));
-					list.Add(new frm_generadorVentana.Item("00 Black Seedless_'Unknown Variety'", 1));
-				}
-				if (this.cmb_variedad.Text.ToString() == "SWEET GLOBE")
-				{
-					list.Add(new frm_generadorVentana.Item("36 IFG Ten -_Sweet Globe™", 1));
-					list.Add(new frm_generadorVentana.Item("00 Green Seedless_'Unknown Variety'", 1));
-				}
-				if (this.cmb_variedad.Text.ToString() == "SWEET NECTAR")
-				{
-					list.Add(new frm_generadorVentana.Item("50 IFG Eighteen -_Sweet Nectar™", 1));
-					list.Add(new frm_generadorVentana.Item("00 Red Seedless_'Unknown Variety'", 1));
-				}
-				if (this.cmb_variedad.Text.ToString() == "THOMPSON SEEDLESS")
-				{
-					list.Add(new frm_generadorVentana.Item("02 Thompson Seedless", 1));
-					list.Add(new frm_generadorVentana.Item("00 Green Seedless_'Unknown Variety'", 1));
-				}
-				if (this.cmb_variedad.Text.ToString() == "TIMCO")
-				{
-					list.Add(new frm_generadorVentana.Item("17 Sheegene 13 -_Timco™", 1));
-					list.Add(new frm_generadorVentana.Item("17 Sheegene 13", 1));
-					list.Add(new frm_generadorVentana.Item("00 Red Seedless_'Unknown Variety'", 1));
-				}
-				if (this.cmb_variedad.Text.ToString() == "TIMPSON")
-				{
-					list.Add(new frm_generadorVentana.Item("23 Sheegene 2 -_Timpson™", 1));
-					list.Add(new frm_generadorVentana.Item("23 Sheegene 2", 1));
-					list.Add(new frm_generadorVentana.Item("00 Green Seedless_'Unknown Variety'", 1));
-				}
-				if (this.cmb_variedad.Text.ToString() == "BLACK SEEDLESS")
-				{
-					list.Add(new frm_generadorVentana.Item("00 Black Seedless 'Unknown Variety'", 1));
-				}
-				if (this.cmb_variedad.Text.ToString() == "RED SEEDLESS")
-				{
-					list.Add(new frm_generadorVentana.Item("00 Red Seedless 'Unknown Variety'", 1));
-				}
-				if (this.cmb_variedad.Text.ToString() == "GREEN SEEDLESS")
-				{
-					list.Add(new frm_generadorVentana.Item("00 Green Seedless 'Unknown Variety'", 1));
-				}
-				if (this.cmb_variedad.Text.ToString() == "SUGRAFIFTYTHREE (RUBY RUSH)")
-				{
-					list.Add(new frm_generadorVentana.Item("00 Red Seedless_'Unknown Variety'", 1));
-				}
-				if (this.cmb_variedad.Text.ToString() == "ARDTHITYFIVE (FIRE CRUNCH)")
-				{
-					list.Add(new frm_generadorVentana.Item("00 Red Seedless_'Unknown Variety'", 1));
-				}
-				this.cmb_variedad_Imprime.DisplayMember = "Name";
-				this.cmb_variedad_Imprime.ValueMember = "Value";
-				this.cmb_variedad_Imprime.DataSource = list;
-			}
-			catch (Exception)
-			{
-			}
+
+try
+{
+    // ==========================
+    // DATOS HARDCODEADOS (LEGACY) - DEJAR COMENTADO
+    // ==========================
+    /*
+    List<Item> list = new List<Item>();
+    // ... (mapeo gigante por texto de variedad)
+    this.cmb_variedad_Imprime.DisplayMember = "Name";
+    this.cmb_variedad_Imprime.ValueMember = "Value";
+    this.cmb_variedad_Imprime.DataSource = list;
+    */
+
+    // ==========================
+    // DESDE BD (NUEVO)
+    // ==========================
+    var db = DatabaseManager.Instance;
+
+    // Si aún no hay variedad seleccionada, limpiamos
+    int? variedadId = TryGetSelectedId(this.cmb_variedad);
+    if (!variedadId.HasValue || variedadId.Value <= 0)
+    {
+    BindComboItems(this.cmb_variedad_Imprime, (System.Collections.IEnumerable)new List<WindowsFormsApplication1.Data.Item>());
+        return;
+    }
+
+    bool pesoFijo = this.chb_pesofijo.Checked;
+    var items = db.GetVariedadesImprimePorVariedadYPesoFijo(variedadId.Value, pesoFijo);
+
+    PopulateCombo(this.cmb_variedad_Imprime, items.Cast<object>().ToList());
+}
+catch (Exception)
+{
+    // mantener comportamiento antiguo
+}
 		}
 
 		// Token: 0x060000E4 RID: 228 RVA: 0x0000BC54 File Offset: 0x00009E54
 	private void Llena_lotes()
 	{
-		try
-		{
-			EnumerableRowCollection<DataRow> source = from contact in this.Tabla_Productores.AsEnumerable()
-			where contact.Field<string>("Productor") == this.cmb_productor.Text.ToString() && contact.Field<string>("Variedad") == this.cmb_variedad.Text.ToString()
-			select contact;
-				DataView dataView = source.AsDataView<DataRow>();
-				this.cmb_lote.DataSource = dataView.ToTable(true, new string[]
-				{
-					"Lote"
-				});
-				this.cmb_lote.DisplayMember = "Lote";
-			}
-			catch (Exception)
-			{
-			}
+
+try
+{
+    // ==========================
+    // XML (LEGACY) - DEJAR COMENTADO
+    // ==========================
+    /*
+    EnumerableRowCollection<DataRow> source = from contact in this.Tabla_Productores.AsEnumerable()
+        where contact.Field<string>("Productor") == this.cmb_productor.Text.ToString() && contact.Field<string>("Variedad") == this.cmb_variedad.Text.ToString()
+        select contact;
+    DataView dataView = source.AsDataView<DataRow>();
+    this.cmb_lote.DataSource = dataView.ToTable(true, new string[] { "Lote" });
+    this.cmb_lote.DisplayMember = "Lote";
+    */
+
+    // ==========================
+    // DESDE BD (NUEVO)
+    // ==========================
+    var db = DatabaseManager.Instance;
+    int? variedadId = TryGetSelectedId(this.cmb_variedad);
+
+    if (variedadId.HasValue && variedadId.Value > 0)
+        PopulateCombo(this.cmb_lote, db.GetLotePorVariedad(variedadId.Value).Cast<object>().ToList());
+	else
+		PopulateCombo(this.cmb_lote, db.GetLotesItems().Cast<object>().ToList());
+}
+catch (Exception)
+{
+    // mantener comportamiento antiguo
+}
 		}
 
 		// Token: 0x060000E5 RID: 229 RVA: 0x0000BCE0 File Offset: 0x00009EE0
 		private void LlenaCalibres()
 		{
-			List<frm_generadorVentana.Item> list = new List<frm_generadorVentana.Item>();
-			if (this.cmb_variedad_Imprime.Text.Trim() == "00" || this.cmb_variedad_Imprime.Text.Trim() == "00")
-			{
-				list.Add(new frm_generadorVentana.Item("XJ", 1));
-				list.Add(new frm_generadorVentana.Item("J", 2));
-				list.Add(new frm_generadorVentana.Item("D", 3));
-				list.Add(new frm_generadorVentana.Item("V", 4));
-				list.Add(new frm_generadorVentana.Item("XXL", 6));
-				list.Add(new frm_generadorVentana.Item("XL", 7));
-				this.cmb_calibre.DisplayMember = "Name";
-				this.cmb_calibre.ValueMember = "Value";
-				this.cmb_calibre.DataSource = list;
-			}
-			else
-			{
-				list.Add(new frm_generadorVentana.Item("XXJ", 1));
-				list.Add(new frm_generadorVentana.Item("XJ", 2));
-				list.Add(new frm_generadorVentana.Item("J", 3));
-				list.Add(new frm_generadorVentana.Item("D", 4));
-				list.Add(new frm_generadorVentana.Item("V", 5));
-				list.Add(new frm_generadorVentana.Item("A", 6));
-				list.Add(new frm_generadorVentana.Item("R", 7));
-				list.Add(new frm_generadorVentana.Item("T", 8));
-				list.Add(new frm_generadorVentana.Item("XXL", 9));
-				list.Add(new frm_generadorVentana.Item("XL", 10));
-				list.Add(new frm_generadorVentana.Item("L", 11));
-				list.Add(new frm_generadorVentana.Item("M", 12));
-				list.Add(new frm_generadorVentana.Item("JJ", 13));
-				list.Add(new frm_generadorVentana.Item("DD", 14));
-				list.Add(new frm_generadorVentana.Item("VV", 15));
-				list.Add(new frm_generadorVentana.Item("AA", 16));
-				list.Add(new frm_generadorVentana.Item("RR", 17));
-				list.Add(new frm_generadorVentana.Item("R10", 18));
-				list.Add(new frm_generadorVentana.Item("AA11", 19));
-				list.Add(new frm_generadorVentana.Item("A22", 20));
-				list.Add(new frm_generadorVentana.Item("VV33", 21));
-				list.Add(new frm_generadorVentana.Item("V44", 22));
-				list.Add(new frm_generadorVentana.Item("DD55", 23));
-				list.Add(new frm_generadorVentana.Item("D66", 24));
-				list.Add(new frm_generadorVentana.Item("JJ77", 25));
-				list.Add(new frm_generadorVentana.Item("J88", 26));
-				this.cmb_calibre.DisplayMember = "Name";
-				this.cmb_calibre.ValueMember = "Value";
-				this.cmb_calibre.DataSource = list;
-			}
+
+try
+{
+    // ==========================
+    // DATOS HARDCODEADOS (LEGACY) - DEJAR COMENTADO
+    // ==========================
+    /*
+    List<Item> list = new List<Item>();
+    if (this.cmb_variedad_Imprime.Text.Trim() == "00" || this.cmb_variedad_Imprime.Text.Trim() == "00")
+    {
+        list.Add(new Item("XJ", 1));
+        // ...
+    }
+    else
+    {
+        list.Add(new Item("XXJ", 1));
+        // ...
+    }
+    this.cmb_calibre.DisplayMember = "Name";
+    this.cmb_calibre.ValueMember = "Value";
+    this.cmb_calibre.DataSource = list;
+    */
+
+    // ==========================
+    // DESDE BD (NUEVO)
+    // ==========================
+    var db = DatabaseManager.Instance;
+	PopulateCombo(this.cmb_calibre, db.GetCalibresItems().Cast<object>().ToList());
+}
+catch (Exception)
+{
+    // mantener comportamiento antiguo
+}
 		}
 
 		// Token: 0x060000E6 RID: 230 RVA: 0x0000BFF1 File Offset: 0x0000A1F1
@@ -707,24 +710,33 @@ namespace WindowsFormsApplication1
 			string text2 = string.Empty;
 			text = this.Busca_Fecha_PTI();
 			text2 = this.Busca_Fecha_YYMMDD();
-			//BarcodeGenerator barcodeGenerator = new BarcodeGenerator();
-			//BarcodeGenerator_PLU barcodeGenerator_PLU = new BarcodeGenerator_PLU();
+			BarcodeGenerator barcodeGenerator = new BarcodeGenerator();
+			BarcodeGenerator_PLU barcodeGenerator_PLU = new BarcodeGenerator_PLU();
 			Graphics g = Graphics.FromImage(new Bitmap(1, 1));
 			Graphics graphics = Graphics.FromImage(new Bitmap(1, 1));
 			Bitmap image = new Bitmap(1, 1, PixelFormat.Format32bppArgb);
 			g = Graphics.FromImage(image);
 			graphics = Graphics.FromImage(image);
 			string empty = string.Empty;
-			SizeF sizeF = default(SizeF);
-			string empty2 = string.Empty;
-			Image image2 = null;// barcodeGenerator.DrawCode128(g, "123456789", 0, 0);
-			string text3 = this.cmb_titulo2.Text.Trim();
-			string text4 = this.cmb_productor.Text.Trim().Substring(0, 6).ToString() + this.cmb_variedad_Imprime.Text.Trim().Substring(0, 2).ToString() + this.cmb_lote.Text.Trim();
-			string empty3 = string.Empty;
+			Image image2 = barcodeGenerator.DrawCode128(g, "123456789", 0, 0);
+            string text3 = this.cmb_titulo2.Text.Trim();
+			string productorCsg = this.GetSelectedProductorCsg();
+			string variedadCode2 = this.GetVariedadImprimeCode2();
+			int? packingId = TryGetSelectedId(this.cmb_packing);
+			string packingCsp = string.Empty;
+			if (packingId.HasValue)
+			{
+				var cspVal = WindowsFormsApplication1.Data.DatabaseManager.Instance.GetCspByPackingId(packingId.Value);
+				if (cspVal.HasValue)
+					packingCsp = cspVal.Value.ToString();
+			}
+
+string text4 = productorCsg + variedadCode2 + this.cmb_lote.Text.Trim();
+string empty3 = string.Empty;
 			string empty4 = string.Empty;
 			string str;
 			string str2;
-			if (this.cmb_packing.Text.Trim().Substring(0, 3).ToString() == "126" || this.cmb_packing.Text.Trim().Substring(0, 3).ToString() == "127" || this.cmb_packing.Text.Trim().Substring(0, 3).ToString() == "128" || this.cmb_packing.Text.Trim().Substring(0, 3).ToString() == "129" || this.cmb_packing.Text.Trim().Substring(0, 3).ToString() == "130" || this.cmb_packing.Text.Trim().Substring(0, 3).ToString() == "131" || this.cmb_packing.Text.Trim().Substring(0, 3).ToString() == "132" || this.cmb_packing.Text.Trim().Substring(0, 3).ToString() == "146" || this.cmb_packing.Text.Trim().Substring(0, 3).ToString() == "147")
+			if (packingId.HasValue && (packingId.Value == 126 || packingId.Value == 127 || packingId.Value == 128 || packingId.Value == 129 || packingId.Value == 130 || packingId.Value == 131 || packingId.Value == 132 || packingId.Value == 146 || packingId.Value == 147))
 			{
 				str = "ELQUI";
 				str2 = "VICUÑA";
@@ -736,7 +748,7 @@ namespace WindowsFormsApplication1
 			}
 			string str3;
 			string str4;
-			if (this.cmb_productor.Text.Trim().ToString() == "106957 HUANCARA" || this.cmb_productor.Text.Trim().ToString() == "106958 MAITENCILLO" || this.cmb_productor.Text.Trim().ToString() == "106955 SANTA BERNARDITA" || this.cmb_productor.Text.Trim().ToString() == "106956 SANTA ADRIANA" || this.cmb_productor.Text.Trim().ToString() == "87197 LA COMPAÑÍA" || this.cmb_productor.Text.Trim().ToString() == "89323 LOS PIMIENTOS")
+			if (IsProductorElqui(productorCsg))
 			{
 				str3 = "ELQUI";
 				str4 = "VICUÑA";
@@ -748,59 +760,46 @@ namespace WindowsFormsApplication1
 			}
 			int width = 1600;
 			int height = 800;
-			Bitmap bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-			for (int i = 0; i < bitmap.Width; i++)
-			{
-				for (int j = 0; j < bitmap.Height; j++)
-				{
-					bitmap.SetPixel(i, j, Color.White);
-					if (i > 390 & i < 928 & j > 200 & j < 203)
-					{
-						bitmap.SetPixel(i, j, Color.Black);
-					}
-					if (i > 390 & i < 928 & j > 250 & j < 253)
-					{
-						bitmap.SetPixel(i, j, Color.Black);
-					}
-					if (i > 390 & i < 928 & j > 300 & j < 303)
-					{
-						bitmap.SetPixel(i, j, Color.Black);
-					}
-					if (this.cbx_sdp.Text.ToString() != "")
-					{
-						if (i > 390 & i < 928 & j > 350 & j < 353)
-						{
-							bitmap.SetPixel(i, j, Color.Black);
-						}
-						if (i > 390 & i < 393 & j > 303 & j < 353)
-						{
-							bitmap.SetPixel(i, j, Color.Black);
-						}
-						if (i > 735 & i < 738 & j > 303 & j < 353)
-						{
-							bitmap.SetPixel(i, j, Color.Black);
-						}
-						if (i > 925 & i < 928 & j > 303 & j < 353)
-						{
-							bitmap.SetPixel(i, j, Color.Black);
-						}
-					}
-					if (i > 390 & i < 393 & j > 200 & j < 303)
-					{
-						bitmap.SetPixel(i, j, Color.Black);
-					}
-					if (i > 735 & i < 738 & j > 200 & j < 303)
-					{
-						bitmap.SetPixel(i, j, Color.Black);
-					}
-					if (i > 925 & i < 928 & j > 200 & j < 303)
-					{
-						bitmap.SetPixel(i, j, Color.Black);
-					}
-				}
-			}
+            Bitmap bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+
+			// Replace slow per-pixel SetPixel loop with fast Graphics operations.
+			// Clearing and drawing filled rectangles is much faster and avoids the bottleneck.
 			Graphics graphics2 = Graphics.FromImage(bitmap);
-			graphics2.SmoothingMode = SmoothingMode.AntiAlias;
+			try
+			{
+				graphics2.Clear(Color.White);
+				graphics2.SmoothingMode = SmoothingMode.AntiAlias;
+
+				// horizontal thin lines (converted from pixel ranges)
+				// original: i>390 && i<928 => x=391..927, width=537
+				int hx = 391;
+				int hwidth = 927 - 391 + 1; // 537
+				// first three fixed horizontal lines
+				graphics2.FillRectangle(Brushes.Black, hx, 201, hwidth, 2); // j>200 && j<203 -> y=201..202
+				graphics2.FillRectangle(Brushes.Black, hx, 251, hwidth, 2); // j>250 && j<253
+				graphics2.FillRectangle(Brushes.Black, hx, 301, hwidth, 2); // j>300 && j<303
+
+				// optional SDP horizontal line
+				if (this.cbx_sdp.Text.ToString() != "")
+				{
+					graphics2.FillRectangle(Brushes.Black, hx, 351, hwidth, 2); // j>350 && j<353
+
+					// three small vertical blocks inside the SDP area
+					graphics2.FillRectangle(Brushes.Black, 391, 304, 2, 49); // i>390 && i<393 && j>303 && j<353
+					graphics2.FillRectangle(Brushes.Black, 736, 304, 2, 49); // i>735 && i<738
+					graphics2.FillRectangle(Brushes.Black, 926, 304, 2, 49); // i>925 && i<928
+				}
+
+				// main vertical separators
+				graphics2.FillRectangle(Brushes.Black, 391, 201, 2, 102); // i>390 && i<393 && j>200 && j<303
+				graphics2.FillRectangle(Brushes.Black, 736, 201, 2, 102); // i>735 && i<738
+				graphics2.FillRectangle(Brushes.Black, 926, 201, 2, 102); // i>925 && i<928
+			}
+			catch
+			{
+				// if something unexpected happens, ensure we still have a white background
+				graphics2.Clear(Color.White);
+			}
 			int[] array = new int[]
 			{
 				36,
@@ -836,139 +835,53 @@ namespace WindowsFormsApplication1
 			stringFormat2.Alignment = StringAlignment.Center;
 			SolidBrush brush2 = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
 			graphics2.DrawString(this.cbx_pallets.Text, font, brush2, new Point(190, 450), stringFormat2);
-			string text5 = this.cmb_variedad_Imprime.Text.Trim().Substring(3).ToString();
-			string[] array2;
-			if (this.cmb_variedad_Imprime.Text.Trim() == "10 T Seedless" || this.cmb_variedad_Imprime.Text.Trim() == "16 Iniagrape-one cv." || this.cmb_variedad_Imprime.Text.Trim() == "23 Sheegene 2" || this.cmb_variedad_Imprime.Text.Trim() == "34 Sheegene 21" || this.cmb_variedad_Imprime.Text.Trim() == "30 Sheegene 17" || this.cmb_variedad_Imprime.Text.Trim() == "21 Sheegene 12" || this.cmb_variedad_Imprime.Text.Trim() == "17 Sheegene 13" || this.cmb_variedad_Imprime.Text.Trim() == "15 Sheegene 20")
-			{
-				array2 = text5.Split(new char[]
-				{
-					'X'
-				});
-			}
-			else if (this.cmb_variedad_Imprime.Text.Trim() == "31 IFG Sixteen -_Sweet Favors™" || this.cmb_variedad_Imprime.Text.Trim() == "36 IFG Ten -_Sweet Globe™" || this.cmb_variedad_Imprime.Text.Trim() == "30 Sheegene 17 -_Great Green™" || this.cmb_variedad_Imprime.Text.Trim() == "23 Sheegene 2 -_Timpson™" || this.cmb_variedad_Imprime.Text.Trim() == "34 Sheegene 21 -_Ivory™" || this.cmb_variedad_Imprime.Text.Trim() == "11 Arrafifteen -_Arra15" || this.cmb_variedad_Imprime.Text.Trim() == "27 Arratwentynine -_Arra29" || this.cmb_variedad_Imprime.Text.Trim() == "32 IFG Three -_Sweet Celebration™" || this.cmb_variedad_Imprime.Text.Trim() == "21 Sheegene 12 -_Krissy™" || this.cmb_variedad_Imprime.Text.Trim() == "17 Sheegene 13 -_Timco™" || this.cmb_variedad_Imprime.Text.Trim() == "38 Sugrathirtyfive -_Autumn Crisp®" || this.cmb_variedad_Imprime.Text.Trim() == "02 IFG Eighteen -_Sweet Nectar™" || this.cmb_variedad_Imprime.Text.Trim() == "51 Arrathirtyfive -_Arra35" || this.cmb_variedad_Imprime.Text.Trim() == "35 IFG Nineteen -_Candy Hearts™" || this.cmb_variedad_Imprime.Text.Trim() == "15 Sheegene 20 -_Allison™" || this.cmb_variedad_Imprime.Text.Trim() == "00 Red Seedless_'Unknown Variety'" || this.cmb_variedad_Imprime.Text.Trim() == "00 Green Seedless_'Unknown Variety'" || this.cmb_variedad_Imprime.Text.Trim() == "00 Black Seedless_'Unknown Variety'" || this.cmb_variedad_Imprime.Text.Trim() == "50 IFG Eighteen -_Sweet Nectar™" || this.cmb_variedad_Imprime.Text.Trim() == "91 Maylen®_(Iniagrape-one cv.)" || this.cmb_variedad_Imprime.Text.Trim() == "22 Blagratwo -_Melody™")
-			{
-				array2 = text5.Split(new char[]
-				{
-					'_'
-				});
-			}
-			else
-			{
-				array2 = text5.Split(new char[]
-				{
-					' '
-				});
-			}
-			int[] array3 = new int[]
-			{
-				80,
-				76,
-				72,
-				68,
-				64,
-				60,
-				56,
-				52,
-				48,
-				44,
-				40,
-				36,
-				32,
-				28,
-				24,
-				20
-			};
-			if (array2.Length.ToString() == "1")
+            // Use the full variety text (do not strip the first 3 chars) so the whole name can be displayed.
+			string text5 = this.cmb_variedad_Imprime.Text.Trim();
+			// Keep the full name as a single token so drawing logic will measure and scale the full string to fit.
+			string[] array2 = new[] { text5 };
+            // Draw the full variety name inside a constrained rectangle at the top-right of the label.
+			// We'll auto-scale the font and allow wrapping so the full name fits the available area.
+			string varietyText = text5; // full name
+            // Try larger sizes first so short names will expand; shrink for long names until they fit wrapped in the box.
+			float[] candidateSizes = new float[] { 120f, 100f, 80f, 76f, 72f, 68f, 64f, 60f, 56f, 52f, 48f, 44f, 40f, 36f, 32f, 28f, 24f, 20f, 16f, 14f, 12f };
+			// Rectangle where the variety must fit (top-right area). Adjust if needed to exact template mm->px mapping.
+			RectangleF varietyRect = new RectangleF(1080f, 40f, 400f, 260f);
+			StringFormat varietyFormat = new StringFormat();
+			// center horizontally and vertically inside the rectangle
+			varietyFormat.Alignment = StringAlignment.Center;
+			varietyFormat.LineAlignment = StringAlignment.Center;
+
+			Font chosenFont = null;
+			foreach (var fs in candidateSizes)
 			{
 				try
 				{
-					font = new Font("arial", 40f, FontStyle.Bold);
-					StringFormat stringFormat3 = new StringFormat();
-					stringFormat3.Alignment = StringAlignment.Center;
-					SolidBrush brush3 = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
-					graphics2.DrawString("", font, brush3, new Point(1280, 70), stringFormat3);
-				}
-				catch (Exception)
-				{
-				}
-				try
-				{
-					for (int k = 0; k < 12; k++)
+					using (var f = new Font("arial", fs, FontStyle.Bold))
 					{
-						font = new Font("arial", (float)array3[k], FontStyle.Bold);
-						if ((ushort)graphics2.MeasureString(array2[0], font).Width < 400)
+						var size = graphics2.MeasureString(varietyText, f, (int)varietyRect.Width);
+						if (size.Height <= varietyRect.Height)
 						{
+							chosenFont = new Font(f.FontFamily, f.Size, f.Style);
 							break;
 						}
 					}
-					StringFormat stringFormat4 = new StringFormat();
-					stringFormat4.Alignment = StringAlignment.Center;
-					SolidBrush brush4 = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
-					graphics2.DrawString(array2[0], font, brush4, new Point(1280, 180), stringFormat4);
 				}
-				catch (Exception)
-				{
-				}
+				catch { }
 			}
-			else
+			if (chosenFont == null)
+				chosenFont = new Font("arial", 14f, FontStyle.Bold);
+
+			try
 			{
-				int num = 0;
-				int num2 = 0;
-				int num3 = 0;
-				try
-				{
-					for (int k = 0; k < 12; k++)
-					{
-						font = new Font("arial", (float)array3[k], FontStyle.Bold);
-						if ((ushort)graphics2.MeasureString(array2[0], font).Width < 400)
-						{
-							break;
-						}
-						num = k;
-					}
-					for (int k = 0; k < 12; k++)
-					{
-						font = new Font("arial", (float)array3[k], FontStyle.Bold);
-						if ((ushort)graphics2.MeasureString(array2[1], font).Width < 400)
-						{
-							break;
-						}
-						num2 = k;
-					}
-					if (num > num2)
-					{
-						num3 = num;
-					}
-					else
-					{
-						num3 = num2;
-					}
-				}
-				catch (Exception)
-				{
-				}
-				try
-				{
-					font = new Font("arial", (float)array3[num3], FontStyle.Bold);
-					StringFormat stringFormat3 = new StringFormat();
-					stringFormat3.Alignment = StringAlignment.Center;
-					SolidBrush brush3 = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
-					graphics2.DrawString(array2[0], font, brush3, new Point(1280, 70), stringFormat3);
-				}
-				catch (Exception)
-				{
-				}
-				try
-				{
-					font = new Font("arial", (float)array3[num3], FontStyle.Bold);
-					StringFormat stringFormat4 = new StringFormat();
-					stringFormat4.Alignment = StringAlignment.Center;
-					SolidBrush brush4 = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
-					graphics2.DrawString(array2[1], font, brush4, new Point(1280, 180), stringFormat4);
-				}
-				catch (Exception)
-				{
-				}
+				// Draw the text wrapped and centered within the rectangle
+				var brushVar = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
+				graphics2.DrawString(varietyText, chosenFont, brushVar, varietyRect, varietyFormat);
+				brushVar.Dispose();
+			}
+			catch { }
+			finally
+			{
+				try { chosenFont.Dispose(); } catch { }
 			}
 			if (this.cmb_variedad_Imprime.Text.Trim() == "06 Black Seedless" || this.cmb_variedad_Imprime.Text.Trim() == "10 T Seedless" || this.cmb_variedad_Imprime.Text.Trim() == "00 Green Seedless" || this.cmb_variedad_Imprime.Text.Trim() == "00 Red Seedless")
 			{
@@ -1023,7 +936,7 @@ namespace WindowsFormsApplication1
 				{
 					font = new Font("arial", 36f, FontStyle.Bold);
 					StringFormat stringFormat3 = new StringFormat();
-				stringFormat3.Alignment = StringAlignment.Center;
+					stringFormat3.Alignment = StringAlignment.Center;
 					SolidBrush brush3 = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
 					graphics2.DrawString("", font, brush3, new Point(670, 520), stringFormat3);
 				}
@@ -1077,7 +990,7 @@ namespace WindowsFormsApplication1
 						for (int k = 0; k < 12; k++)
 						{
 							font = new Font("arial", (float)array5[k], FontStyle.Bold);
-							if ((ushort)graphics2.MeasureString(array4[1], font).Width < 350)
+							if ((ushort)graphics2.MeasureString(array4[1], font).Width < 400)
 							{
 								break;
 							}
@@ -1092,7 +1005,7 @@ namespace WindowsFormsApplication1
 						for (int k = 0; k < 12; k++)
 						{
 							font = new Font("arial", (float)array5[k], FontStyle.Bold);
-							if ((ushort)graphics2.MeasureString(array4[2], font).Width < 350)
+							if ((ushort)graphics2.MeasureString(array4[2], font).Width < 400)
 							{
 								break;
 							}
@@ -1132,18 +1045,18 @@ namespace WindowsFormsApplication1
 				}
 				try
 				{
-					font = new Font("arial", (float)array3[num3], FontStyle.Bold);
+					font = new Font("arial", (float)array5[num3], FontStyle.Bold);
 					StringFormat stringFormat3 = new StringFormat();
 					stringFormat3.Alignment = StringAlignment.Center;
 					SolidBrush brush3 = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
-					graphics2.DrawString(array4[0], font, brush3, new Point(670, 450), stringFormat3);
+					graphics2.DrawString(array4[0], font, brush3, new Point(670, 520), stringFormat3);
 				}
 				catch (Exception)
 				{
 				}
 				try
 				{
-					font = new Font("arial", (float)array3[num3], FontStyle.Bold);
+					font = new Font("arial", (float)array5[num3], FontStyle.Bold);
 					StringFormat stringFormat4 = new StringFormat();
 					stringFormat4.Alignment = StringAlignment.Center;
 					SolidBrush brush4 = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
@@ -1154,7 +1067,7 @@ namespace WindowsFormsApplication1
 				}
 				try
 				{
-					font = new Font("arial", (float)array3[num3], FontStyle.Bold);
+					font = new Font("arial", (float)array5[num3], FontStyle.Bold);
 					StringFormat stringFormat6 = new StringFormat();
 					stringFormat6.Alignment = StringAlignment.Center;
 					SolidBrush brush6 = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
@@ -1168,24 +1081,13 @@ namespace WindowsFormsApplication1
 			StringFormat stringFormat7 = new StringFormat();
 			stringFormat7.Alignment = StringAlignment.Center;
 			SolidBrush brush7 = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
-			graphics2.DrawString("CSG " + this.cmb_productor.Text.Trim().Substring(0, 6).ToString(), font, brush7, new Point(832, 260), stringFormat7);
-			if (this.cmb_packing.Text.Trim().ToString() == "146 P. Los Pimientos Terreno                      3101432")
-			{
-				font = new Font("arial", 22f, FontStyle.Bold);
-				StringFormat stringFormat8 = new StringFormat();
-				stringFormat8.Alignment = StringAlignment.Center;
-				SolidBrush brush8 = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
-				graphics2.DrawString("CSP " + this.cmb_packing.Text.Trim().Substring(50, 7).ToString(), font, brush8, new Point(832, 210), stringFormat8);
-			}
-			else
-			{
-				font = new Font("arial", 22f, FontStyle.Bold);
-				StringFormat stringFormat8 = new StringFormat();
-				stringFormat8.Alignment = StringAlignment.Center;
-				SolidBrush brush8 = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
-				graphics2.DrawString("CSP " + this.cmb_packing.Text.Trim().Substring(50, 6).ToString(), font, brush8, new Point(832, 210), stringFormat8);
-			}
-			font = new Font("arial", 17f, FontStyle.Bold);
+			graphics2.DrawString("CSG " + productorCsg, font, brush7, new Point(832, 260), stringFormat7);
+			font = new Font("arial", 22f, FontStyle.Bold);
+StringFormat stringFormat8 = new StringFormat();
+stringFormat8.Alignment = StringAlignment.Center;
+SolidBrush brush8 = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
+graphics2.DrawString("CSP " + packingCsp, font, brush8, new Point(832, 210), stringFormat8);
+font = new Font("arial", 17f, FontStyle.Bold);
 			StringFormat stringFormat9 = new StringFormat();
 			stringFormat9.Alignment = StringAlignment.Center;
 			SolidBrush brush9 = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
@@ -1228,17 +1130,33 @@ namespace WindowsFormsApplication1
 			stringFormat16.Alignment = StringAlignment.Near;
 			SolidBrush brush16 = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
 			graphics2.DrawString(this.cmb_tipo_embalaje.Text, font, brush16, new Point(685, 36), stringFormat15);
-			image2 = bitmap;
-			image2.Save("etiqueta.jpg", ImageFormat.Jpeg);
-			graphics2.Dispose();
-			image2.Dispose();
-			this.pb_etiqueta.ImageLocation = "etiqueta.jpg";
+            // Assign generated bitmap directly to the PictureBox to avoid slow disk IO.
+			try
+			{
+				Image old = this.pb_etiqueta.Image;
+				// Clone so we can dispose the local bitmap and graphics safely
+				this.pb_etiqueta.Image = (Image)bitmap.Clone();
+				try { old?.Dispose(); } catch { }
+			}
+			catch
+			{
+				// Fallback: if cloning fails, set image location via temporary save
+				try { bitmap.Save("etiqueta.jpg", ImageFormat.Jpeg); this.pb_etiqueta.ImageLocation = "etiqueta.jpg"; } catch { }
+			}
+			finally
+			{
+				graphics2.Dispose();
+				try { bitmap.Dispose(); } catch { }
+			}
 		}
 
 		// Token: 0x060000F3 RID: 243 RVA: 0x0000DFC4 File Offset: 0x0000C1C4
 		private void chb_pesofijo_CheckedChanged(object sender, EventArgs e)
 		{
-			this.LlenaEmbalaje();
+
+this.LlenaEmbalaje();
+this.Llena_variedad_imprime();
+this.pb_etiqueta.Image = null;
 		}
 
 		// Token: 0x060000F4 RID: 244 RVA: 0x0000DFCE File Offset: 0x0000C1CE
@@ -1251,21 +1169,40 @@ namespace WindowsFormsApplication1
 		// Token: 0x060000F5 RID: 245 RVA: 0x0000E01C File Offset: 0x0000C21C
 	private void LlenaVariedad()
 	{
-		try
-		{
-			EnumerableRowCollection<DataRow> source = from contact in this.Tabla_Productores.AsEnumerable()
-			where contact.Field<string>("Productor") == this.cmb_productor.Text.ToString()
-			select contact;
-				DataView dataView = source.AsDataView<DataRow>();
-				this.cmb_variedad.DataSource = dataView.ToTable(true, new string[]
-				{
-					"Variedad"
-				});
-				this.cmb_variedad.DisplayMember = "Variedad";
-			}
-			catch (Exception)
-			{
-			}
+
+try
+{
+    // ==========================
+    // XML (LEGACY) - DEJAR COMENTADO
+    // ==========================
+    /*
+    EnumerableRowCollection<DataRow> source = from contact in this.Tabla_Productores.AsEnumerable()
+        where contact.Field<string>("Productor") == this.cmb_productor.Text.ToString()
+        select contact;
+    DataView dataView = source.AsDataView<DataRow>();
+    this.cmb_variedad.DataSource = dataView.ToTable(true, new string[] { "Variedad" });
+    this.cmb_variedad.DisplayMember = "Variedad";
+    */
+
+    // ==========================
+    // DESDE BD (NUEVO)
+    // ==========================
+    var db = DatabaseManager.Instance;
+
+    // Preservar selección si es posible
+	int? current = TryGetSelectedId(this.cmb_variedad);
+
+	BindComboItems(this.cmb_variedad, (System.Collections.IEnumerable)db.GetVariedadesItems());
+
+    if (current.HasValue)
+    {
+        try { this.cmb_variedad.SelectedValue = current.Value; } catch { }
+    }
+}
+catch (Exception)
+{
+    // mantener comportamiento antiguo
+}
 		}
 
 		// Token: 0x060000F6 RID: 246 RVA: 0x0000E0A8 File Offset: 0x0000C2A8
@@ -1278,21 +1215,39 @@ namespace WindowsFormsApplication1
 		// Token: 0x060000F7 RID: 247 RVA: 0x0000E13C File Offset: 0x0000C33C
 	private void Llena_SDP()
 	{
-		try
-		{
-			EnumerableRowCollection<DataRow> source = from contact in this.Tabla_Productores.AsEnumerable()
-			where contact.Field<string>("Productor") == this.cmb_productor.Text.ToString() && contact.Field<string>("Variedad") == this.cmb_variedad.Text.ToString() && contact.Field<string>("Lote") == this.cmb_lote.Text.ToString()
-			select contact;
-				DataView dataView = source.AsDataView<DataRow>();
-				this.cbx_sdp.DataSource = dataView.ToTable(true, new string[]
-				{
-					"SDP"
-				});
-				this.cbx_sdp.DisplayMember = "SDP";
-			}
-			catch (Exception)
-			{
-			}
+
+try
+{
+    // ==========================
+    // XML (LEGACY) - DEJAR COMENTADO
+    // ==========================
+    /*
+    EnumerableRowCollection<DataRow> source = from contact in this.Tabla_Productores.AsEnumerable()
+        where contact.Field<string>("Productor") == this.cmb_productor.Text.ToString()
+            && contact.Field<string>("Variedad") == this.cmb_variedad.Text.ToString()
+            && contact.Field<string>("Lote") == this.cmb_lote.Text.ToString()
+        select contact;
+    DataView dataView = source.AsDataView<DataRow>();
+    this.cbx_sdp.DataSource = dataView.ToTable(true, new string[] { "SDP" });
+    this.cbx_sdp.DisplayMember = "SDP";
+    */
+
+    // ==========================
+    // DESDE BD (NUEVO)
+    // ==========================
+    var db = DatabaseManager.Instance;
+
+    int? productorId = TryGetSelectedId(this.cmb_productor);
+    int? variedadId = TryGetSelectedId(this.cmb_variedad);
+    int? loteId = TryGetSelectedId(this.cmb_lote);
+    int? variedadImprimeId = TryGetSelectedId(this.cmb_variedad_Imprime);
+
+    BindComboItems(this.cbx_sdp, (System.Collections.IEnumerable)db.GetSDPsPorSeleccion(productorId, variedadId, loteId, variedadImprimeId));
+}
+catch (Exception)
+{
+    // mantener comportamiento antiguo
+}
 		}
 
 		// Token: 0x060000F8 RID: 248 RVA: 0x0000E1C8 File Offset: 0x0000C3C8
@@ -1307,6 +1262,290 @@ namespace WindowsFormsApplication1
 			this.LlenaCalibres();
 			this.pb_etiqueta.Image = null;
 		}
+
+
+
+// ==========================
+// CARGA DE DATOS DESDE BD
+// ==========================
+private void Llena_Packing()
+{
+    try
+    {
+        var db = DatabaseManager.Instance;
+
+        // Para mantener el comportamiento del formulario (dependía de que el texto partiera con el ID),
+        // se arma un display "000 <dato> <csp>" cuando aplique.
+        var originales = db.GetPackingItems();
+        var formateados = new List<WindowsFormsApplication1.Data.Item>();
+
+        foreach (var it in originales)
+        {
+            // Mostrar solo el nombre del packing (sin ID ni CSP en el texto)
+			string raw = (it.Dato ?? "").Trim();
+			string name = ExtractPackingName(raw);
+			if (string.IsNullOrWhiteSpace(name)) name = raw;
+			formateados.Add(new WindowsFormsApplication1.Data.Item(name, it.Id));
+        }
+
+        BindComboItems(this.cmb_packing, (System.Collections.IEnumerable)formateados);
+    }
+    catch { }
+}
+
+private void Llena_Peso()
+{
+    try
+    {
+        var db = DatabaseManager.Instance;
+        BindComboItems(this.cmb_titulo2, (System.Collections.IEnumerable)db.GetPesoItems());
+    }
+    catch { }
+}
+
+private void Llena_Calibre()
+{
+    try
+    {
+        var db = DatabaseManager.Instance;
+        BindComboItems(this.cmb_calibre, (System.Collections.IEnumerable)db.GetCalibresItems());
+    }
+    catch { }
+}
+
+private void Llena_CategoriaSAG()
+{
+    try
+    {
+        var db = DatabaseManager.Instance;
+        BindComboItems(this.cmb_cat1, (System.Collections.IEnumerable)db.GetCategoriaSAGItems());
+    }
+    catch { }
+}
+
+// ==========================
+// HELPERS
+// ==========================
+private static void SafeSelectFirst(ComboBox cmb)
+{
+    try
+    {
+        if (cmb == null) return;
+        if (cmb.Items != null && cmb.Items.Count > 0)
+            cmb.SelectedIndex = 0;
+    }
+    catch { }
+}
+
+private static void BindComboItems(ComboBox cmb, System.Collections.IEnumerable items)
+{
+    if (cmb == null) return;
+
+    try
+    {
+        cmb.DataSource = null;
+        cmb.DisplayMember = "Dato";
+        cmb.ValueMember = "Id";
+        cmb.DataSource = items ?? new object[0];
+    }
+    catch
+    {
+        // Si falla el binding (por estilo del control), dejamos el fallback por texto
+        try
+        {
+            cmb.Items.Clear();
+            if (items != null)
+            {
+                foreach (var it in items)
+                    cmb.Items.Add(it);
+            }
+        }
+        catch { }
+    }
+}
+
+private static int? TryGetSelectedId(ComboBox cmb)
+{
+    if (cmb == null) return null;
+
+    try
+    {
+        if (cmb.SelectedValue != null)
+        {
+            int id;
+            if (int.TryParse(cmb.SelectedValue.ToString(), out id))
+                return id;
+        }
+
+        // Fallback: intentar extraer Id/Value/ValueMember dinámicamente
+		var sel = cmb.SelectedItem;
+		if (sel != null)
+		{
+			// Si tiene propiedad "Id"
+			var propId = sel.GetType().GetProperty("Id");
+			if (propId != null)
+			{
+				try { return Convert.ToInt32(propId.GetValue(sel)); } catch { }
+			}
+
+			// Si tiene propiedad "Value"
+			var propValue = sel.GetType().GetProperty("Value");
+			if (propValue != null)
+			{
+				try { return Convert.ToInt32(propValue.GetValue(sel)); } catch { }
+			}
+
+			// Intentar usar ToString() parseable
+			try
+			{
+				int v;
+				if (int.TryParse(sel.ToString(), out v)) return v;
+			}
+			catch { }
+		}
+    }
+    catch { }
+
+    return null;
+}
+
+private static string OnlyDigits(string s)
+{
+    if (string.IsNullOrWhiteSpace(s)) return "";
+    var sb = new System.Text.StringBuilder();
+    foreach (char ch in s)
+    {
+        if (char.IsDigit(ch)) sb.Append(ch);
+    }
+    return sb.ToString();
+}
+
+private static string ExtractLeadingDigits(string s)
+{
+    if (string.IsNullOrWhiteSpace(s)) return "";
+    s = s.TrimStart();
+    var sb = new System.Text.StringBuilder();
+    foreach (char ch in s)
+    {
+        if (char.IsDigit(ch)) sb.Append(ch);
+        else break;
+    }
+    return sb.ToString();
+}
+
+// Extrae el nombre del productor eliminando prefijos numéricos o códigos al inicio.
+private static string ExtractProductorName(string s)
+{
+	if (string.IsNullOrWhiteSpace(s)) return "";
+	// Quitar guiones bajos y múltiplos espacios
+	var t = s.Trim();
+	// Si el texto comienza con dígitos o con patrón "123456 401 name...", saltar tokens iniciales que sean numéricos
+	var parts = t.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+	int skip = 0;
+	for (int i = 0; i < parts.Count; i++)
+	{
+		// token completamente numérico -> skip
+		if (parts[i].All(c => char.IsDigit(c))) { skip++; continue; }
+		// token con dígitos seguido de otros (ej: "105588401") -> if starts with digits, skip token
+		if (parts[i].Length > 0 && char.IsDigit(parts[i][0]) && parts[i].Any(c => char.IsLetter(c)) == false)
+		{
+			skip++; continue;
+		}
+		// else consider first non-numeric token as start of name
+		break;
+	}
+
+	if (skip >= parts.Count) return string.Join(" ", parts);
+	return string.Join(" ", parts.Skip(skip));
+}
+
+private string GetSelectedProductorCsg()
+{
+    try
+    {
+        int? productorId = TryGetSelectedId(this.cmb_productor);
+        if (productorId.HasValue)
+        {
+            string csg = DatabaseManager.Instance.GetProductorCsgById(productorId.Value);
+            string digits = OnlyDigits(csg);
+            if (!string.IsNullOrWhiteSpace(digits)) return digits;
+        }
+    }
+    catch { }
+
+    // fallback: extraer dígitos del texto mostrado
+    try
+    {
+        string t = (this.cmb_productor.Text ?? "").Trim();
+        string lead = ExtractLeadingDigits(t);
+        if (!string.IsNullOrWhiteSpace(lead)) return lead;
+        return OnlyDigits(t);
+    }
+    catch { }
+
+    return "";
+}
+
+private string GetSelectedPackingCsp()
+{
+    try
+    {
+        int? packingId = TryGetSelectedId(this.cmb_packing);
+        if (packingId.HasValue)
+        {
+            var csp = DatabaseManager.Instance.GetCspByPackingId(packingId.Value);
+            if (csp.HasValue) return csp.Value.ToString();
+        }
+    }
+    catch { }
+
+    // fallback: último token numérico
+    try
+    {
+        string t = (this.cmb_packing.Text ?? "").Trim();
+        string[] parts = t.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length > 0)
+        {
+            long v;
+            if (long.TryParse(parts[parts.Length - 1], out v)) return v.ToString();
+        }
+    }
+    catch { }
+
+    return "";
+}
+
+private string GetVariedadImprimeCode2()
+{
+    try
+    {
+        string t = (this.cmb_variedad_Imprime.Text ?? "").Trim();
+        // el código suele venir al inicio
+        string lead = ExtractLeadingDigits(t);
+        if (lead.Length >= 2) return lead.Substring(0, 2);
+        if (t.Length >= 2) return t.Substring(0, 2);
+    }
+    catch { }
+    return "";
+}
+
+private bool IsProductorElqui(string productorCsg)
+{
+    try
+    {
+        int n;
+        if (!int.TryParse(productorCsg, out n)) return false;
+
+        return n == 106957
+            || n == 106958
+            || n == 106955
+            || n == 106956
+            || n == 87197
+            || n == 89323;
+    }
+    catch { }
+    return false;
+}
 
 		// Token: 0x040000AC RID: 172
 		private DataSet datos = new DataSet("Catrastro");
@@ -1387,33 +1626,6 @@ namespace WindowsFormsApplication1
 
 			// Token: 0x040000E1 RID: 225
 			private static ushort[] table = new ushort[256];
-		}
-
-		// Token: 0x02000021 RID: 33
-		public class Item
-		{
-			// Token: 0x17000025 RID: 37
-			// (get) Token: 0x06000105 RID: 261 RVA: 0x00010228 File Offset: 0x0000E428
-			// (set) Token: 0x06000106 RID: 262 RVA: 0x0001023F File Offset: 0x0000E43F
-			public string Name { get; set; }
-
-			// Token: 0x17000026 RID: 38
-			// (get) Token: 0x06000107 RID: 263 RVA: 0x00010248 File Offset: 0x0000E448
-			// (set) Token: 0x06000108 RID: 264 RVA: 0x0001025F File Offset: 0x0000E45F
-			public int Value { get; set; }
-
-			// Token: 0x06000109 RID: 265 RVA: 0x00010268 File Offset: 0x0000E468
-			public Item(string name, int value)
-			{
-				this.Name = name;
-				this.Value = value;
-			}
-
-			// Token: 0x0600010A RID: 266 RVA: 0x00010284 File Offset: 0x0000E484
-			public override string ToString()
-			{
-				return this.Name;
-			}
 		}
 
         private void label6_Click(object sender, EventArgs e)

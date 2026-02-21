@@ -72,7 +72,7 @@ public class sf
 				}
 			}
 		}
-		catch (Exception ex)
+		catch
 		{
 			// Silenciosamente ignora errores de inicialización
 		}
@@ -96,7 +96,7 @@ public class sf
 				result = num;
 			}
 		}
-		catch (Exception ex)
+		catch
 		{
 			result = 0f;
 		}
@@ -118,7 +118,7 @@ public class sf
 				result = Convert.ToSingle(valor);
 			}
 		}
-		catch (Exception ex)
+		catch
 		{
 			result = 0f;
 		}
@@ -181,7 +181,7 @@ public class sf
 				result = 0;
 			}
 		}
-		catch (Exception ex)
+		catch
 		{
 			result = 0;
 		}
@@ -344,7 +344,7 @@ public class sf
 			dateTime = DateTime.Parse(fecha.ToString());
 			result = true;
 		}
-		catch (Exception ex)
+		catch
 		{
 			result = false;
 		}
@@ -372,7 +372,7 @@ public class sf
 			dateTime = DateTime.Parse(fecha.ToString());
 			result = true;
 		}
-		catch (Exception ex)
+		catch
 		{
 			result = false;
 		}
@@ -386,7 +386,7 @@ public class sf
 		{
 			fecha = sf.Left(fecha, 10);
 		}
-		catch (Exception ex)
+		catch (Exception)
 		{
 			return "";
 		}
@@ -530,7 +530,7 @@ public class sf
 		{
 			result = "";
 		}
-		catch (Exception ex)
+		catch
 		{
 			result = "";
 		}
@@ -550,7 +550,7 @@ public class sf
 			}
 			result = valor.Substring(0, longitud) + " ...";
 		}
-		catch (Exception ex)
+		catch (Exception)
 		{
 			result = "";
 		}
@@ -565,7 +565,7 @@ public class sf
 		{
 			result = "";
 		}
-		catch (Exception ex)
+		catch
 		{
 			result = "";
 		}
@@ -594,7 +594,7 @@ public class sf
 		{
 			result = Convert.ToBoolean(valor);
 		}
-		catch (Exception ex)
+		catch
 		{
 			result = false;
 		}
@@ -609,7 +609,7 @@ public class sf
 		{
 			result = false;
 		}
-		catch (Exception ex)
+		catch
 		{
 			result = false;
 		}
@@ -630,7 +630,7 @@ public class sf
 		{
 			result = Convert.ToBoolean(valor);
 		}
-		catch (Exception ex)
+		catch
 		{
 			result = false;
 		}
